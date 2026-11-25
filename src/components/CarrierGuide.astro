@@ -1,0 +1,133 @@
+<div class="carrier-grid">
+  <div class="carrier-card glass-card">
+    <div class="carrier-top">
+      <span class="carrier-icon">🌐</span>
+      <div class="carrier-info">
+        <h3 class="carrier-name">中国电信（163骨干网）</h3>
+        <span class="carrier-feature">晚高峰公网出口严重拥塞</span>
+      </div>
+    </div>
+    <p class="carrier-desc">
+      电信普通 163 骨干网出境带宽非常紧张，晚高峰丢包常年超过 25%。因此<strong>电信宽带用户切勿购买普通公网直连中继</strong>，务必首选 IPLC 专线或具有丰富电信 CN2/BGP 入口的高端节点。
+    </p>
+    <div class="carrier-rec">
+      <span>✅ 首选推荐：</span>
+      <strong><a href="/ranking#invisible">隐形人</a>、<a href="/ranking#breezenet">微风网络</a>、<a href="/ranking#twilight">暮光加速</a></strong>
+    </div>
+  </div>
+
+  <div class="carrier-card glass-card">
+    <div class="carrier-top">
+      <span class="carrier-icon">⚡</span>
+      <div class="carrier-info">
+        <h3 class="carrier-name">中国联通（169骨干网）</h3>
+        <span class="carrier-feature">北方国际出口相对充裕</span>
+      </div>
+    </div>
+    <p class="carrier-desc">
+      联通 169 骨干网出海表现相对良好，尤其是连往日本（NTT/IIJ）、韩国以及欧洲方向中继性能优异。联通用户在选择高性价比中继机场时能获得超出预期的流畅表现。
+    </p>
+    <div class="carrier-rec">
+      <span>✅ 首选推荐：</span>
+      <strong><a href="/ranking#flycat">飞猫云</a>、<a href="/ranking#laddercloud">梯子云</a>、<a href="/ranking#dalaocloud">大佬云</a></strong>
+    </div>
+  </div>
+
+  <div class="carrier-card glass-card">
+    <div class="carrier-top">
+      <span class="carrier-icon">🚀</span>
+      <div class="carrier-info">
+        <h3 class="carrier-name">中国移动（CMI进出境）</h3>
+        <span class="carrier-feature">大带宽但 QoS 限制严重</span>
+      </div>
+    </div>
+    <p class="carrier-desc">
+      移动 CMI 国际出口带宽庞大，但晚高峰针对常规 TCP 加密协议做深度限速。移动用户强烈推荐选择具备<strong>多入口 BGP 隧道调度</strong>或部署了 <strong>Hysteria 2 次时代拥塞控制协议</strong> 的抗丢包机场。
+    </p>
+    <div class="carrier-rec">
+      <span>✅ 首选推荐：</span>
+      <strong><a href="/ranking#flyv">飞V</a>、<a href="/ranking#flashleap">闪跃 FlashLeap</a>、<a href="/ranking#shandianshu">闪电鼠</a></strong>
+    </div>
+  </div>
+</div>
+
+<style>
+  .carrier-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .carrier-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .carrier-card {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-radius: 0.85rem;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  }
+
+  .carrier-top {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .carrier-icon {
+    font-size: 2rem;
+  }
+
+  .carrier-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .carrier-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .carrier-feature {
+    font-size: 0.75rem;
+    color: #ea580c;
+    font-weight: 600;
+  }
+
+  .carrier-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .carrier-rec {
+    margin-top: auto;
+    padding: 0.75rem;
+    background: #f0f9ff;
+    border-radius: 0.5rem;
+    border: 1px solid #bae6fd;
+    font-size: 0.8rem;
+    color: #0369a1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .carrier-rec strong {
+    color: #0f172a;
+  }
+
+  .carrier-rec a:hover {
+    color: #0284c7;
+    text-decoration: underline;
+  }
+</style>

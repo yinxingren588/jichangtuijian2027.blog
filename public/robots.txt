@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Bingbot specific directives
+User-agent: bingbot
+Allow: /
+Crawl-delay: 1
+
+# Googlebot specific directives
+User-agent: Googlebot
+Allow: /
+
+# Sitemaps
+Sitemap: https://jichangtuijian2027.blog/sitemap.xml
+Sitemap: https://jichangtuijian2027.blog/sitemap-index.xml

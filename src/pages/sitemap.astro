@@ -1,0 +1,431 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import PageCtaBanner from '../components/PageCtaBanner.astro';
+import { AIRPORT_LIST } from '../data/airports';
+import { FAQS, FAQ_CATEGORIES } from '../data/faqs';
+import { CORE_SITEMAP_PAGES, POST_SITEMAP_ENTRIES } from '../data/sitemap';
+import { SITE_CONFIG } from '../data/site';
+
+const canonicalUrl = `${SITE_CONFIG.url}/sitemap`;
+const totalPagesCount = CORE_SITEMAP_PAGES.length + AIRPORT_LIST.length + POST_SITEMAP_ENTRIES.length;
+const pageTitle = `全站网站地图 (Sitemap) - ${totalPagesCount} 个独立页面与 ${FAQS.length} 条FAQ索引 | ${SITE_CONFIG.name}`;
+const pageDesc = `2027机场推荐（jichangtuijian2027.blog）全站索引地图：汇集 ${CORE_SITEMAP_PAGES.length} 大核心专题页、${AIRPORT_LIST.length} 家品牌套餐详情页、${POST_SITEMAP_ENTRIES.length} 篇深度测评文章与 ${FAQS.length} 条 FAQ 百科目录。`;
+const pageKeywords = '2027机场推荐网站地图, Sitemap, 全站导航索引, jichangtuijian2027.blog';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': [
+    { '@type': 'ListItem', 'position': 1, 'name': '首页', 'item': SITE_CONFIG.url },
+    { '@type': 'ListItem', 'position': 2, 'name': '网站地图 (Sitemap)', 'item': canonicalUrl },
+  ],
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDesc}
+  keywords={pageKeywords}
+  canonicalUrl={canonicalUrl}
+  schemaJson={breadcrumbSchema}
+>
+  <div class="sitemap-page section-py">
+    <div class="container sm-container">
+      <PageHero
+        currentLabel="全站网站地图 (Sitemap)"
+        badges={[
+          { text: `🗺️ ${totalPagesCount} 个独立索引页面`, variant: 'primary' },
+          { text: `🚀 ${AIRPORT_LIST.length} 家品牌套餐专页`, variant: 'gold' },
+          { text: `❓ ${FAQS.length} 条 FAQ 百科直达`, variant: 'emerald' },
+        ]}
+        title="2027机场推荐 全站网站地图索引 (Sitemap)"
+        description="汇总整站所有专题栏目、35 家品牌完整套餐与测评页面、深度专栏文章及 60 条实用 FAQ，方便访客与 Bing / Google 搜索引擎爬虫快速直达全站任意内容。"
+        actions={[
+          { label: '📄 查看 XML 站点地图 (/sitemap.xml)', href: '/sitemap.xml', variant: 'primary' },
+          { label: '📑 查看 Sitemap Index', href: '/sitemap-index.xml', variant: 'outline' },
+          { label: '🤖 查看 Robots.txt', href: '/robots.txt', variant: 'outline' },
+        ]}
+        maxWidth="1080px"
+      />
+
+      <!-- 1. 核心专题页面 -->
+      <section class="sm-section">
+        <div class="sm-head">
+          <h2>🏛️ 核心栏目与独立专题页面（共 {CORE_SITEMAP_PAGES.length} 个）</h2>
+          <p>覆盖榜单、矩阵对比、线路技术、三网适配、选购指南、客户端教程与 FAQ 百科</p>
+        </div>
+
+        <div class="core-grid">
+          {CORE_SITEMAP_PAGES.map((p) => (
+            <a href={p.path} class="core-card glass-card">
+              <div class="cc-top">
+                <span class="badge badge-primary">{p.tag}</span>
+                <code class="cc-path">{p.path}</code>
+              </div>
+              <h3>{p.title}</h3>
+              <p>{p.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- 2. 35 家品牌详情页 -->
+      <section class="sm-section">
+        <div class="sm-head">
+          <h2>🏆 {AIRPORT_LIST.length} 家精选机场完整套餐与测评专栏（独立详情页）</h2>
+          <p>点击任意品牌直达对应独立详情页，查看全部流量档位、起步资费、核心优势与优惠券</p>
+        </div>
+
+        <div class="brands-grid">
+          {AIRPORT_LIST.map((a) => (
+            <a href={`/airports/${a.id}`} class="brand-sm-card glass-card">
+              <div class="bsm-head">
+                <span class="bsm-rank">#{a.rank}</span>
+                <strong class="bsm-name">{a.name}</strong>
+              </div>
+              <div class="bsm-meta">
+                <span class="bsm-price">{a.startPriceShort}</span>
+                <span class="bsm-traffic">{a.startTrafficShort}</span>
+              </div>
+              <div class="bsm-foot">
+                <span>{a.plans.length} 档套餐</span>
+                {a.couponCode ? (
+                  <code class="bsm-code">券 {a.couponCode}</code>
+                ) : (
+                  <span class="bsm-auto">专属通道直惠</span>
+                )}
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- 3. 深度测评文章专栏 -->
+      <section class="sm-section">
+        <div class="sm-head">
+          <h2>📝 深度测评与科学上网教程文章（共 {POST_SITEMAP_ENTRIES.length} 篇）</h2>
+          <p>硬核长文攻略，涵盖线路原理、客户端保姆级教程、ChatGPT 纯净 IP 与防跑路守则</p>
+        </div>
+
+        <div class="posts-sm-grid">
+          {POST_SITEMAP_ENTRIES.map((post) => (
+            <a href={post.path} class="post-sm-card glass-card">
+              <div class="psm-top">
+                <span class="badge badge-purple">{post.category}</span>
+                <code class="cc-path">{post.path}</code>
+              </div>
+              <h3>{post.title}</h3>
+              <p>{post.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- 4. 60 条 FAQ 分类目录 -->
+      <section class="sm-section">
+        <div class="sm-head">
+          <h2>❓ 60 条常见问题百科全索引（按 {FAQ_CATEGORIES.length} 大专题分类）</h2>
+          <p>点击任意问题直达对应回答（或进入 <a href="/faq" class="inline-link">/faq 百科页</a> 使用关键词瞬时过滤）</p>
+        </div>
+
+        <div class="faq-cats-grid">
+          {FAQ_CATEGORIES.map((cat) => {
+            const catFaqs = FAQS.filter((f) => f.category === cat.id);
+            return (
+              <div class="faq-cat-card glass-card">
+                <div class="fc-head">
+                  <h3>{cat.icon} {cat.label}</h3>
+                  <span class="badge badge-primary">{catFaqs.length} 条</span>
+                </div>
+                <ul class="fc-list">
+                  {catFaqs.map((item) => (
+                    <li>
+                      <a href={`/faq#${item.id}`}>{item.question}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <PageCtaBanner
+        title="站长提示：搜索引擎自动化提交已就绪"
+        description="全站 XML 站点地图（/sitemap.xml 与 /sitemap-index.xml）均随每次构建实时生成，并已接入 Bing IndexNow 主动推送。"
+        ctaLabel="🏆 返回 2027 精选排行榜 →"
+        ctaHref="/ranking"
+        secondaryLabel="📄 打开 /sitemap.xml"
+        secondaryHref="/sitemap.xml"
+        maxWidth="1080px"
+      />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .sitemap-page {
+    padding-top: 2.25rem;
+  }
+
+  .sm-container {
+    max-width: 1080px;
+  }
+
+  .sm-section {
+    margin-bottom: 3rem;
+  }
+
+  .sm-head {
+    margin-bottom: 1.25rem;
+  }
+
+  .sm-head h2 {
+    font-size: 1.38rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.3rem;
+  }
+
+  .sm-head p {
+    font-size: 0.88rem;
+    color: #64748b;
+  }
+
+  .inline-link {
+    color: #2563eb;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  .core-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .core-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .core-card {
+    padding: 1.15rem 1.25rem;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .cc-top,
+  .psm-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .cc-path {
+    font-size: 0.74rem;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 0.12rem 0.45rem;
+    border-radius: 0.3rem;
+    font-family: monospace;
+  }
+
+  .core-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .core-card p {
+    font-size: 0.82rem;
+    color: #475569;
+    line-height: 1.5;
+  }
+
+  .brands-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 0.85rem;
+  }
+
+  @media (min-width: 540px) {
+    .brands-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .brands-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .brands-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .brand-sm-card {
+    padding: 0.95rem 1rem;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .bsm-head {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .bsm-rank {
+    font-size: 0.72rem;
+    font-weight: 800;
+    font-family: monospace;
+    background: #eff6ff;
+    color: #2563eb;
+    padding: 0.12rem 0.4rem;
+    border-radius: 0.3rem;
+  }
+
+  .bsm-name {
+    font-size: 0.94rem;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .bsm-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+  }
+
+  .bsm-price {
+    font-weight: 800;
+    color: #0284c7;
+  }
+
+  .bsm-traffic {
+    color: #64748b;
+    font-size: 0.72rem;
+  }
+
+  .bsm-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: #64748b;
+    padding-top: 0.35rem;
+    border-top: 1px solid #f1f5f9;
+  }
+
+  .bsm-code {
+    background: #fffbeb;
+    color: #b45309;
+    padding: 0.08rem 0.35rem;
+    border-radius: 0.25rem;
+    font-weight: 700;
+  }
+
+  .bsm-auto {
+    color: #059669;
+    font-weight: 600;
+  }
+
+  .posts-sm-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .posts-sm-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .post-sm-card {
+    padding: 1.15rem 1.25rem;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .post-sm-card h3 {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .post-sm-card p {
+    font-size: 0.8rem;
+    color: #475569;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .faq-cats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .faq-cats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .faq-cat-card {
+    padding: 1.25rem;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .fc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .fc-head h3 {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .fc-list {
+    padding-left: 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: #334155;
+  }
+
+  .fc-list a:hover {
+    color: #2563eb;
+    text-decoration: underline;
+  }
+</style>

@@ -1,0 +1,120 @@
+---
+export interface HeroBadge {
+  text: string;
+  variant?: 'primary' | 'gold' | 'emerald' | 'purple';
+}
+
+export interface HeroAction {
+  label: string;
+  href: string;
+  variant?: 'primary' | 'accent' | 'outline';
+}
+
+export interface Props {
+  currentLabel: string;
+  badges?: HeroBadge[];
+  title: string;
+  description: string;
+  actions?: HeroAction[];
+  maxWidth?: string;
+}
+
+const {
+  currentLabel,
+  badges = [],
+  title,
+  description,
+  actions = [],
+  maxWidth = '1040px',
+} = Astro.props;
+---
+
+<div class="subpage-hero-wrap" style={`max-width: ${maxWidth};`}>
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="/">首页</a>
+    <span class="sep">/</span>
+    <span class="current" aria-current="page">{currentLabel}</span>
+  </nav>
+
+  <header class="subpage-hero">
+    {badges.length > 0 && (
+      <div class="hero-badges">
+        {badges.map((b) => (
+          <span class={`badge badge-${b.variant || 'primary'}`}>{b.text}</span>
+        ))}
+      </div>
+    )}
+    <h1 class="section-title">{title}</h1>
+    <p class="section-desc">{description}</p>
+    {actions.length > 0 && (
+      <div class="hero-actions">
+        {actions.map((act) => (
+          <a href={act.href} class={`btn btn-${act.variant || 'outline'}`}>
+            {act.label}
+          </a>
+        ))}
+      </div>
+    )}
+  </header>
+</div>
+
+<style>
+  .subpage-hero-wrap {
+    margin: 0 auto 2.5rem;
+  }
+
+  .breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumbs a {
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--accent-blue);
+  }
+
+  .breadcrumbs .sep {
+    color: var(--border-color);
+  }
+
+  .breadcrumbs .current {
+    color: var(--text-main);
+    font-weight: 600;
+  }
+
+  .subpage-hero {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .subpage-hero .section-desc {
+    max-width: 780px;
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+</style>

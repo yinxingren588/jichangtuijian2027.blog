@@ -1,0 +1,146 @@
+<div class="comparison-container glass-card">
+  <div class="table-responsive">
+    <table class="benchmark-table">
+      <thead>
+        <tr>
+          <th>线路类型</th>
+          <th>物理传输原理</th>
+          <th>晚高峰丢包率</th>
+          <th>物理延迟与抖动</th>
+          <th>特殊时期抗封锁</th>
+          <th>成本与性价比</th>
+          <th>首选代表推荐</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong class="line-name highlight-blue">IPLC 内网专线</strong></td>
+          <td>点对点物理光纤纯内网直通，<strong>完全不经公网 GFW</strong></td>
+          <td><span class="badge-emerald">&lt; 0.1% 极稳</span></td>
+          <td>20ms - 35ms 超低物理延迟</td>
+          <td><span class="status-excellent">★★★★★ 绝对抗封</span></td>
+          <td>线路成本高，体验天花板</td>
+          <td><strong><a href="/ranking#invisible">隐形人</a>、<a href="/ranking#dalaocloud">大佬云</a></strong></td>
+        </tr>
+        <tr>
+          <td><strong class="line-name highlight-blue">IEPL 以太网专线</strong></td>
+          <td>二层以太网内网物理传输，免过墙审查</td>
+          <td><span class="badge-emerald">&lt; 0.2% 零抖动</span></td>
+          <td>25ms - 38ms 极低延迟</td>
+          <td><span class="status-excellent">★★★★★ 绝对抗封</span></td>
+          <td>成本较高，稳定性极佳</td>
+          <td><strong><a href="/ranking#breezenet">微风网络</a>、<a href="/ranking#twilight">暮光加速</a></strong></td>
+        </tr>
+        <tr>
+          <td><strong class="line-name highlight-purple">BGP 优质隧道中继</strong></td>
+          <td>国内多线 BGP 入口 + 加密私有隧道出境</td>
+          <td><span class="badge-gold">1% - 5% 适中</span></td>
+          <td>35ms - 55ms 适中延迟</td>
+          <td><span class="status-good">★★★★☆ 较强抵抗</span></td>
+          <td>性价比极高，平民首选</td>
+          <td><strong><a href="/ranking#flycat">飞猫云</a>、<a href="/ranking#laddercloud">梯子云</a>、<a href="/ranking#u1s1">U1S1</a></strong></td>
+        </tr>
+        <tr>
+          <td><strong class="line-name text-dim">普通公网直连（淘汰）</strong></td>
+          <td>本地宽带直接经过公网国际出口直连海外 VPS</td>
+          <td><span class="badge-rose">&gt; 35% 严重拥堵</span></td>
+          <td>120ms - 280ms 高抖动</td>
+          <td><span class="status-poor">★☆☆☆☆ 随时阵亡</span></td>
+          <td>极度廉价，但几乎不可用</td>
+          <td><em>主流市场已基本淘汰</em></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .comparison-container {
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+  }
+
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .benchmark-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    text-align: left;
+    background: #ffffff;
+  }
+
+  .benchmark-table thead th {
+    background: #f1f5f9;
+    color: #334155;
+    font-weight: 700;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .benchmark-table tbody td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+  }
+
+  .benchmark-table tbody tr:hover {
+    background: #f8fafc;
+  }
+
+  .benchmark-table a {
+    color: #0284c7;
+  }
+
+  .benchmark-table a:hover {
+    text-decoration: underline;
+  }
+
+  .line-name {
+    font-size: 0.95rem;
+  }
+
+  .highlight-blue {
+    color: #0284c7;
+  }
+
+  .highlight-purple {
+    color: #7c3aed;
+  }
+
+  .text-dim {
+    color: #64748b;
+  }
+
+  .status-excellent {
+    color: #059669;
+    font-weight: 700;
+  }
+
+  .status-good {
+    color: #0284c7;
+    font-weight: 700;
+  }
+
+  .status-poor {
+    color: #e11d48;
+    font-weight: 700;
+  }
+
+  .badge-rose {
+    background: #fff1f2;
+    color: #e11d48;
+    border: 1px solid #fecdd3;
+    padding: 0.2rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+</style>

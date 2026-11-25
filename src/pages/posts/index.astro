@@ -1,0 +1,158 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_CONFIG } from '../../data/site';
+
+// 获取所有测评文章
+const allPosts = Object.values(import.meta.glob('../../content/posts/*.md', { eager: true })) as any[];
+
+// 按照发布时间排序
+const posts = allPosts.sort((a, b) => {
+  return new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime();
+});
+
+const pageTitle = `2027机场推荐测评专栏与科学上网教程 | ${SITE_CONFIG.name}`;
+const pageDesc = '汇聚2027最新机场深度测评、IPLC专线测速对比、Clash/Sing-box客户端配置指南与防跑路避坑常识。';
+const pageKeywords = '2027机场推荐, 机场评测, 科学上网教程, Clash教程, IPLC专线科普, 机场避坑指南';
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDesc}
+  keywords={pageKeywords}
+  canonicalUrl={`${SITE_CONFIG.url}/posts`}
+>
+  <div class="posts-page section-py">
+    <div class="container">
+      <!-- 页面头部标头 -->
+      <header class="section-title-wrap">
+        <span class="section-subtitle">2027 实测专栏</span>
+        <h1 class="section-title">2027机场推荐测评与新手教程</h1>
+        <p class="section-desc">
+          坚持“数据实测、拒绝水军、客观公正”的原则。全面涵盖 4K/8K 晚高峰压测、全专线网络架构剖析与各平台客户端图文上手指南。
+        </p>
+      </header>
+
+      <!-- 文章卡片网格 -->
+      <div class="posts-grid">
+        {posts.map((post) => {
+          const slug = post.file.split(/[/\\]/).pop().replace(/\.md$/, '');
+          return (
+            <article class="post-card glass-card">
+              <div class="card-meta">
+                <span class="badge badge-primary">{post.frontmatter.category || '深度评测'}</span>
+                <time datetime={post.frontmatter.pubDate} class="post-date">
+                  {post.frontmatter.pubDate}
+                </time>
+              </div>
+
+              <h2 class="post-title">
+                <a href={`/posts/${slug}`}>{post.frontmatter.title}</a>
+              </h2>
+
+              <p class="post-excerpt">{post.frontmatter.description}</p>
+
+              <div class="card-footer">
+                <div class="author-info">
+                  <span class="author-avatar">🛡️</span>
+                  <span class="author-name">{post.frontmatter.author || '2027测评团队'}</span>
+                </div>
+                <a href={`/posts/${slug}`} class="read-more">
+                  阅读全文 →
+                </a>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .posts-page {
+    padding-top: 3rem;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  @media (min-width: 768px) {
+    .posts-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .post-card {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-radius: 0.85rem;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .post-date {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
+  .post-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text-main);
+    transition: color 0.2s;
+  }
+
+  .post-title a:hover {
+    color: var(--accent-blue);
+  }
+
+  .post-excerpt {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+    margin-top: auto;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .author-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
+  .read-more {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+    transition: transform 0.2s;
+  }
+
+  .read-more:hover {
+    transform: translateX(4px);
+  }
+</style>

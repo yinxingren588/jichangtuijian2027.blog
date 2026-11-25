@@ -1,0 +1,305 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import PageCtaBanner from '../components/PageCtaBanner.astro';
+import BuyingGuide from '../components/BuyingGuide.astro';
+import { SITE_CONFIG } from '../data/site';
+
+const canonicalUrl = `${SITE_CONFIG.url}/guide`;
+const pageTitle = `2027科学上网机场选购指南与防跑路避坑原则 | ${SITE_CONFIG.name}`;
+const pageDesc =
+  '2027年购买科学上网机场必看攻略：涵盖流媒体追剧、外贸住宅IP、ChatGPT/Claude AI、外服游戏四大场景匹配方案，以及防跑路六大铁律与流量倍率详解。';
+const pageKeywords =
+  '2027机场选购指南, 机场防跑路攻略, 怎么选科学上网机场, 机场流量倍率, 纯净住宅IP机场, 2027机场推荐';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': [
+    { '@type': 'ListItem', 'position': 1, 'name': '首页', 'item': SITE_CONFIG.url },
+    { '@type': 'ListItem', 'position': 2, 'name': '选购指南与避坑', 'item': canonicalUrl },
+  ],
+};
+
+const rules = [
+  {
+    num: '01',
+    title: '新入手前 1-2 个月坚持月付试用',
+    desc: '哪怕商家年付打 5 折也先按月购买，亲自用满 1 个晚高峰周期确认速度与客服响应后，再决定是否续订长期周期。',
+  },
+  {
+    num: '02',
+    num: '02',
+    title: '拉黑“永久会员/几元无限流量”盘',
+    desc: '跨境带宽与海外住宅 IP 都是按月真金白银烧钱的硬成本，所有违背常识的“几十元永久使用”几乎全是卷款跑路套路盘。',
+  },
+  {
+    num: '03',
+    title: '主力专线 + 备用按量双保险配置',
+    desc: '除了日常主力月付机场，强烈建议再花 30 元左右备一个永不过期的按量套餐（如环球梯、跨界云），防止突发失联找不到公告。',
+  },
+  {
+    num: '04',
+    title: '外贸 / AI 养号认准纯净住宅 IP',
+    desc: '登录 Claude / ChatGPT / TikTok / PayPal 请避开万人共用的廉价机房节点（并禁用自动轮询切换节点），避免频繁风控验证或关联封号。',
+  },
+  {
+    num: '05',
+    title: '下单前核对清楚节点“流量倍率”',
+    desc: '注意节点名字后方标明的 1x / 2x / 0.5x 倍率：下载大体积文件尽量用低倍率或 1x 节点，别挂在 3x/5x 稀缺专线上挂机下载。',
+  },
+  {
+    num: '06',
+    title: '严禁使用机场节点挂 BT / 迅雷下载',
+    desc: '海外机房对版权 P2P 投诉（DMCA）零容忍，绝大多数机场都启用了审计规则禁用 BT/PT 种子流量，避免误触规则或拖慢速度。',
+  },
+];
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDesc}
+  keywords={pageKeywords}
+  canonicalUrl={canonicalUrl}
+  schemaJson={breadcrumbSchema}
+>
+  <div class="guide-page section-py">
+    <div class="container">
+      <PageHero
+        currentLabel="选购指南与防坑"
+        badges={[
+          { text: '🎯 四大真实使用场景匹配', variant: 'primary' },
+          { text: '🛡️ 六大防跑路铁律', variant: 'emerald' },
+          { text: '💡 2027 新手买前必读', variant: 'gold' },
+        ]}
+        title="2027科学上网机场场景化选购与防跑路指南"
+        description="不同用途对节点延迟、单线程吞吐和 IP 纯净度的诉求大不相同——买对不买贵，按下面的场景模板直接匹配最契合你的品牌："
+        actions={[
+          { label: '📖 阅读《防跑路避坑深度长文》', href: '/posts/2027-anti-scam-guide', variant: 'outline' },
+          { label: '🏆 前往 35 家实力榜单下单', href: '/ranking', variant: 'primary' },
+        ]}
+        maxWidth="1040px"
+      />
+
+      <section class="guide-scenarios">
+        <BuyingGuide />
+      </section>
+
+      <!-- 防跑路六大铁律 -->
+      <section class="rules-section">
+        <div class="sub-header">
+          <h2>老手总结：2027 购买科学上网机场六大避坑铁律</h2>
+          <p>牢记以下 6 条实战经验，帮你避开 99% 的“跑路机场”、“虚标带宽”与封号踩雷：</p>
+        </div>
+
+        <div class="rules-grid">
+          {rules.map((r) => (
+            <div class="rule-card glass-card">
+              <span class="rule-num">铁律 {r.num}</span>
+              <h3>{r.title}</h3>
+              <p>{r.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- 测评量化打分标准 -->
+      <section class="scoring-section glass-card">
+        <div class="sc-head">
+          <h2>📊 本站量化评测打分体系与收录准则（满分 5.0 / 10 分制对照）</h2>
+          <p>所有 35 家收录品牌均在 20:00–23:00 晚高峰真实压测，杜绝只测凌晨闲时的“虚假跑分”：</p>
+        </div>
+        <div class="sc-grid">
+          <div class="sc-item">
+            <span class="sc-weight">权重 30%</span>
+            <h3>晚高峰速率与延迟</h3>
+            <p>晚 8 点至 11 点针对 4K/8K 视频拖动缓冲速度与网络抖动压测。</p>
+          </div>
+          <div class="sc-item">
+            <span class="sc-weight">权重 30%</span>
+            <h3>节点连通率与抗封锁</h3>
+            <p>IPLC/IEPL 内网专线质量及敏感时期不断流稳定性。</p>
+          </div>
+          <div class="sc-item">
+            <span class="sc-weight">权重 20%</span>
+            <h3>流媒体与 AI 解锁</h3>
+            <p>Netflix 4K 非自制剧、Disney+、ChatGPT、Claude 原生解锁。</p>
+          </div>
+          <div class="sc-item">
+            <span class="sc-weight">权重 10%</span>
+            <h3>价格性价比与不限时</h3>
+            <p>全节点是否坚持 1.0x 真实倍率、月付门槛与永久买断选项。</p>
+          </div>
+          <div class="sc-item">
+            <span class="sc-weight">权重 10%</span>
+            <h3>售后工单与运维响应</h3>
+            <p>客服响应时效、公告频道活跃度及突发风控热切换效率。</p>
+          </div>
+        </div>
+      </section>
+
+      <PageCtaBanner
+        title="已经明确自己的需求？立即从 35 家实测榜单里挑选一台靠谱服务商"
+        description="已为您按「全专线旗舰 / 高可用专线 / 平民性价比 / 低延迟电竞 / 不限时按量」划分完毕，点击即可领专属优惠码。"
+        ctaLabel="🏆 查看 2027 完整排行榜 →"
+        ctaHref="/ranking"
+        secondaryLabel="📱 查看客户端配置教程"
+        secondaryHref="/clients"
+        maxWidth="1040px"
+      />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .guide-page {
+    padding-top: 2.25rem;
+  }
+
+  .guide-scenarios {
+    max-width: 1040px;
+    margin: 0 auto 3.25rem;
+  }
+
+  .rules-section {
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+
+  .sub-header {
+    text-align: center;
+    margin-bottom: 1.75rem;
+  }
+
+  .sub-header h2 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.45rem;
+  }
+
+  .sub-header p {
+    font-size: 0.92rem;
+    color: #475569;
+  }
+
+  .rules-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .rules-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .rules-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .rule-card {
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    background: #ffffff;
+  }
+
+  .rule-num {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 0.18rem 0.55rem;
+    border-radius: 0.35rem;
+    background: #fff7ed;
+    color: #ea580c;
+    border: 1px solid #fed7aa;
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+
+  .rule-card h3 {
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .rule-card p {
+    font-size: 0.86rem;
+    color: #475569;
+    line-height: 1.65;
+  }
+
+  .scoring-section {
+    max-width: 1040px;
+    margin: 2.5rem auto 0;
+    padding: 1.75rem;
+    background: #ffffff;
+  }
+
+  .sc-head {
+    text-align: center;
+    margin-bottom: 1.35rem;
+  }
+
+  .sc-head h2 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.35rem;
+  }
+
+  .sc-head p {
+    font-size: 0.88rem;
+    color: #475569;
+  }
+
+  .sc-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .sc-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .sc-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+
+  .sc-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.65rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .sc-weight {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #2563eb;
+  }
+
+  .sc-item h3 {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .sc-item p {
+    font-size: 0.78rem;
+    color: #64748b;
+    line-height: 1.5;
+  }
+</style>

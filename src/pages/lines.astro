@@ -1,0 +1,222 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import PageCtaBanner from '../components/PageCtaBanner.astro';
+import LineBenchmark from '../components/LineBenchmark.astro';
+import { SITE_CONFIG } from '../data/site';
+
+const canonicalUrl = `${SITE_CONFIG.url}/lines`;
+const pageTitle = `2027科学上网线路架构横评（IPLC/IEPL专线 vs BGP中继 vs 直连） | ${SITE_CONFIG.name}`;
+const pageDesc =
+  '硬核拆解 2027 主流 IPLC 内网专线、IEPL 以太网专线、BGP 隧道中继与公网直连的物理传输原理、晚高峰丢包率、抗封锁表现及 Shadowsocks/Trojan/Hysteria 2/VLESS-Reality 协议深度对比。';
+const pageKeywords =
+  'IPLC专线与BGP中继区别, IEPL专线机场, 线路架构横评, Hysteria 2协议, VLESS-Reality, 2027机场推荐';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': [
+    { '@type': 'ListItem', 'position': 1, 'name': '首页', 'item': SITE_CONFIG.url },
+    { '@type': 'ListItem', 'position': 2, 'name': '线路架构横评', 'item': canonicalUrl },
+  ],
+};
+
+const protocols = [
+  {
+    name: 'Shadowsocks-2022 / AEAD',
+    tier: '专线主力黄金协议',
+    stealth: '依赖传输层（专线上极致稳，直连需配合混淆）',
+    pros: '协议开销极小、延迟最低、CPU 占用低，手机端极其省电，全平台客户端 100% 通用。',
+    bestFor: '在 IPLC / IEPL 内网专线上运行（如隐形人、微风网络、大佬云）',
+  },
+  {
+    name: 'Trojan',
+    tier: '高伪装 TLS 经典协议',
+    stealth: '★★★★★ 伪装为标准 HTTPS 网站流量',
+    pros: '走标准 443 端口穿透企业内网/校园网能力优秀，握手特征自然，不易被主动探测识别。',
+    bestFor: '办公网络、酒店 Wi-Fi、对防火墙穿透有要求的中继或专线节点',
+  },
+  {
+    name: 'VLESS-Reality',
+    tier: '2027 抗封锁标杆协议',
+    stealth: '★★★★★ 借用海外大厂真实 TLS 指纹',
+    pros: '无需自备证书即可实现最高级别防主动探测，消除 TLS 指纹特征，抗阻断表现极为顽强。',
+    bestFor: '公网强审查期、移动/电信高敏感阶段稳连（如暮光加速、飞V、神行加速、速界）',
+  },
+  {
+    name: 'Hysteria 2 (基于 QUIC)',
+    tier: '弱网暴力提速神器',
+    stealth: '★★★★☆ 伪装 HTTP/3 (QUIC) 流量',
+    pros: '专为高丢包恶劣网络环境设计，自带定制拥塞控制算法，丢包 20%-30% 下仍能强行跑满宽带。',
+    bestFor: '中国移动宽带、宿舍校园网、外服游戏降延迟（如飞V、闪跃 FlashLeap、闪电鼠、边缘节点）',
+  },
+];
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDesc}
+  keywords={pageKeywords}
+  canonicalUrl={canonicalUrl}
+  schemaJson={breadcrumbSchema}
+>
+  <div class="lines-page section-py">
+    <div class="container">
+      <PageHero
+        currentLabel="线路架构横评"
+        badges={[
+          { text: '🔬 底层物理传输对比', variant: 'primary' },
+          { text: '⚡ IPLC / IEPL 内网不过墙解析', variant: 'emerald' },
+          { text: '🛡️ 2027 现代协议测评', variant: 'purple' },
+        ]}
+        title="2027主流四大科学上网线路架构与协议深度横评"
+        description="同样是科学上网机场，为什么月费从 10 元到 30 元不等？本页为你拆解物理线路层与加密协议层的核心差异，帮你把每一分预算花在刀刃上。"
+        actions={[
+          { label: '📖 阅读《IPLC专线与BGP科普全文》', href: '/posts/2027-iplc-vs-bgp-guide', variant: 'outline' },
+          { label: '🏆 按线路挑选 35 家品牌', href: '/ranking', variant: 'primary' },
+        ]}
+        maxWidth="1080px"
+      />
+
+      <section class="bench-section">
+        <LineBenchmark />
+      </section>
+
+      <!-- 现代加密协议对比 -->
+      <section class="protocols-section">
+        <div class="sub-header">
+          <h2>2027 主流加密传输协议实测对比</h2>
+          <p>在客户端看到同一个地区的多个不同协议节点时，对照下表按场景秒选：</p>
+        </div>
+
+        <div class="protocol-grid">
+          {protocols.map((p) => (
+            <article class="proto-card glass-card">
+              <div class="proto-top">
+                <h3>{p.name}</h3>
+                <span class="badge badge-primary">{p.tier}</span>
+              </div>
+              <div class="proto-row">
+                <span class="p-label">隐匿抗探测：</span>
+                <span class="p-val">{p.stealth}</span>
+              </div>
+              <p class="proto-pros">{p.pros}</p>
+              <div class="proto-best">
+                <span>🎯 最佳适用：</span>
+                <strong>{p.bestFor}</strong>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <PageCtaBanner
+        title="选对了线路协议，别忘了匹配你家里的宽带运营商"
+        description="中国电信 163、中国联通 169、中国移动 CMI 的国际出口表现截然不同，去三网适配页精准对号入座。"
+        ctaLabel="📶 前往三网宽带适配指南 →"
+        ctaHref="/carriers"
+        secondaryLabel="📊 对比 35 家机场线路规格"
+        secondaryHref="/comparison"
+        maxWidth="1080px"
+      />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .lines-page {
+    padding-top: 2.25rem;
+  }
+
+  .bench-section {
+    max-width: 1080px;
+    margin: 0 auto 3rem;
+  }
+
+  .protocols-section {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .sub-header {
+    text-align: center;
+    margin-bottom: 1.75rem;
+  }
+
+  .sub-header h2 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.45rem;
+  }
+
+  .sub-header p {
+    font-size: 0.92rem;
+    color: #475569;
+  }
+
+  .protocol-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .protocol-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .proto-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    background: #ffffff;
+  }
+
+  .proto-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .proto-top h3 {
+    font-size: 1.12rem;
+    font-weight: 800;
+    color: #0f172a;
+    font-family: monospace;
+  }
+
+  .proto-row {
+    font-size: 0.85rem;
+    color: #334155;
+  }
+
+  .p-label {
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .proto-pros {
+    font-size: 0.88rem;
+    color: #475569;
+    line-height: 1.65;
+  }
+
+  .proto-best {
+    margin-top: auto;
+    padding: 0.65rem 0.85rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 0.82rem;
+    color: #0369a1;
+  }
+
+  .proto-best strong {
+    color: #0f172a;
+  }
+</style>

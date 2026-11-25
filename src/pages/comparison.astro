@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import PageCtaBanner from '../components/PageCtaBanner.astro';
+import ComparisonTable from '../components/ComparisonTable.astro';
+import { AIRPORT_LIST } from '../data/airports';
+import { SITE_CONFIG } from '../data/site';
+
+const canonicalUrl = `${SITE_CONFIG.url}/comparison`;
+const pageTitle = `2027机场推荐全参数对比矩阵（35家价格/延迟/协议/解锁筛选） | ${SITE_CONFIG.name}`;
+const pageDesc =
+  '一张表横向对比 2027 年 35 家热门科学上网机场的线路架构、核心协议、实测延迟带宽、流媒体与 ChatGPT 解锁、起步月费与推荐评分，支持实时关键词搜索与分类过滤。';
+const pageKeywords =
+  '2027机场对比, 机场参数矩阵, 35家机场价格表, 机场延迟对比, Hysteria2机场筛选, 按量付费机场对比';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': [
+    { '@type': 'ListItem', 'position': 1, 'name': '首页', 'item': SITE_CONFIG.url },
+    { '@type': 'ListItem', 'position': 2, 'name': '35家对比矩阵', 'item': canonicalUrl },
+  ],
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDesc}
+  keywords={pageKeywords}
+  canonicalUrl={canonicalUrl}
+  schemaJson={breadcrumbSchema}
+>
+  <div class="comparison-page section-py">
+    <div class="container">
+      <PageHero
+        currentLabel="35家参数对比矩阵"
+        badges={[
+          { text: `📊 ${AIRPORT_LIST.length} 家全量参数横向对比`, variant: 'primary' },
+          { text: '🔍 支持协议/名称实时检索', variant: 'emerald' },
+          { text: '💸 起步低至 ¥15/月（年付 ¥6.53/月起）', variant: 'gold' },
+        ]}
+        title="2027机场核心参数与晚高峰测速全景矩阵"
+        description="横向对照各家在 IPLC/IEPL 专线架构、起步价格、流量额度、核心优势、峰值带宽与优惠码上的真实数据，点击品牌名称可直达完整分档价目表。"
+        actions={[
+          { label: '🏆 查看完整图文评测卡片', href: '/ranking', variant: 'primary' },
+          { label: '🔬 了解专线与中继物理差异', href: '/lines', variant: 'outline' },
+        ]}
+        maxWidth="1160px"
+      />
+
+      <!-- 速览亮点指标卡 -->
+      <div class="quick-highlights">
+        <div class="hl-card glass-card">
+          <span class="hl-tag">🏆 综合榜首最高评分</span>
+          <strong class="hl-val">隐形人（⭐ 4.96 · 99.99%在线）</strong>
+          <span class="hl-sub">全 IEPL 物理专线 · 券 yxr888 实付 ¥19.20/月起</span>
+        </div>
+        <div class="hl-card glass-card">
+          <span class="hl-tag">⚡ 晚高峰极致零丢包</span>
+          <strong class="hl-val">二猫云 / 大佬云 / 暮光加速</strong>
+          <span class="hl-sub">单节点峰值 2.5Gbps · 全节点统一 1.0x 真实倍率</span>
+        </div>
+        <div class="hl-card glass-card">
+          <span class="hl-tag">💰 超低年付/月付入门门槛</span>
+          <strong class="hl-val">边缘节点 / 唯兔云 / 无忧链接</strong>
+          <span class="hl-sub">月付 ¥15 起 · 年付小包折合仅 ¥6.53–¥6.66/月</span>
+        </div>
+        <div class="hl-card glass-card">
+          <span class="hl-tag">📦 永不过期按量买断精选</span>
+          <strong class="hl-val">光速云 247GB · 跨界云 · 环球梯</strong>
+          <span class="hl-sub">一次性买断流量永不清零 · 应急防失联备用首选</span>
+        </div>
+      </div>
+
+      <ComparisonTable />
+
+      <PageCtaBanner
+        title="看不懂 IPLC、IEPL 和 BGP 中继的差距？不知道选哪家匹配你的电信/联通/移动宽带？"
+        description="欢迎查看四大线路底层架构横评，或按运营商查看三网宽带实测推荐。"
+        ctaLabel="🔬 查看线路架构深度横评 →"
+        ctaHref="/lines"
+        secondaryLabel="📶 查看三网宽带适配指南"
+        secondaryHref="/carriers"
+        maxWidth="1160px"
+      />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .comparison-page {
+    padding-top: 2.25rem;
+  }
+
+  .quick-highlights {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .quick-highlights {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .quick-highlights {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .hl-card {
+    padding: 1.1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    background: #ffffff;
+  }
+
+  .hl-tag {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #0284c7;
+  }
+
+  .hl-val {
+    font-size: 1.05rem;
+    color: #0f172a;
+    font-weight: 800;
+  }
+
+  .hl-sub {
+    font-size: 0.76rem;
+    color: #64748b;
+  }
+</style>

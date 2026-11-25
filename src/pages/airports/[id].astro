@@ -1,0 +1,773 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageCtaBanner from '../../components/PageCtaBanner.astro';
+import { AIRPORT_LIST, type AirportItem } from '../../data/airports';
+import { SITE_CONFIG } from '../../data/site';
+
+export async function getStaticPaths() {
+  return AIRPORT_LIST.map((airport) => ({
+    params: { id: airport.id },
+    props: { airport },
+  }));
+}
+
+interface Props {
+  airport: AirportItem;
+}
+
+const { airport } = Astro.props;
+const canonicalUrl = `${SITE_CONFIG.url}/airports/${airport.id}`;
+const pageTitle = `${airport.name} 2027最新测评：${airport.plans.length}档流量套餐、价格与核心优势 | ${SITE_CONFIG.name}`;
+const pageDesc = `${airport.name} 详细评测与价目表：起步 ${airport.startPriceShort}（${airport.startTrafficShort}），线路架构 ${airport.lineType}，实测在线率 ${airport.uptime}。附全部 ${airport.plans.length} 档套餐明细与专属优惠码。`;
+const pageKeywords = `${airport.name}, ${airport.name}怎么样, ${airport.name}价格套餐, ${airport.name}优惠码, ${airport.couponCode || '专线机场'}, 2027机场推荐`;
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': [
+    { '@type': 'ListItem', 'position': 1, 'name': '首页', 'item': SITE_CONFIG.url },
+    { '@type': 'ListItem', 'position': 2, 'name': '2027榜单', 'item': `${SITE_CONFIG.url}/ranking` },
+    { '@type': 'ListItem', 'position': 3, 'name': airport.name, 'item': canonicalUrl },
+  ],
+};
+
+const reviewSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  'name': airport.name,
+  'description': airport.summary,
+  'category': airport.categoryLabel,
+  'aggregateRating': {
+    '@type': 'AggregateRating',
+    'ratingValue': (airport.rating / 2).toFixed(1),
+    'bestRating': '5',
+    'worstRating': '1',
+    'reviewCount': airport.reviewsCount,
+  },
+};
+
+const neighbors = AIRPORT_LIST.filter((a) => a.id !== airport.id).slice(0, 4);
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDesc}
+  keywords={pageKeywords}
+  canonicalUrl={canonicalUrl}
+  schemaJson={[reviewSchema, breadcrumbSchema]}
+>
+  <div class="brand-page section-py">
+    <div class="container brand-container">
+      <!-- 面包屑 -->
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">首页</a>
+        <span class="sep">/</span>
+        <a href="/ranking">2027机场排行榜</a>
+        <span class="sep">/</span>
+        <span class="current" aria-current="page">{airport.name}</span>
+      </nav>
+
+      <!-- 品牌头部摘要卡 -->
+      <section class="brand-hero glass-card">
+        <div class="bh-top">
+          <div class="bh-left">
+            <div class="bh-badges">
+              <span class="badge badge-gold">NO.{airport.rank} · {airport.categoryLabel}</span>
+              <span class="badge badge-primary">{airport.badge}</span>
+            </div>
+            <h1>{airport.name} 2027 详细评测、流量套餐与价格明细</h1>
+            <p class="bh-summary">{airport.summary}</p>
+          </div>
+
+          <div class="bh-price-box">
+            <span class="bp-label">起步特惠方案</span>
+            <strong class="bp-price">{airport.startPriceShort}</strong>
+            <span class="bp-traffic">{airport.startTrafficShort}</span>
+            <span class="bp-all">{airport.monthlyPrice}</span>
+          </div>
+        </div>
+
+        <div class="bh-specs-row">
+          <div class="bhs-item">
+            <span class="bhs-k">综合评分</span>
+            <span class="bhs-v gold">{airport.scoreText}（{airport.rating.toFixed(1)} / 10）</span>
+          </div>
+          <div class="bhs-item">
+            <span class="bhs-k">专线架构</span>
+            <span class="bhs-v blue">{airport.lineType}</span>
+          </div>
+          <div class="bhs-item">
+            <span class="bhs-k">测速性能</span>
+            <span class="bhs-v green">{airport.speed}</span>
+          </div>
+          <div class="bhs-item">
+            <span class="bhs-k">网络在线率</span>
+            <span class="bhs-v green">{airport.uptime}</span>
+          </div>
+        </div>
+
+        <div class="bh-cta-row">
+          {airport.couponCode ? (
+            <div class="bh-coupon">
+              <span class="c-lbl">🎟️ {airport.couponText}：</span>
+              <code class="c-code">{airport.couponCode}</code>
+              <button type="button" class="btn btn-outline btn-xs" data-copy-code={airport.couponCode}>
+                📋 一键复制
+              </button>
+            </div>
+          ) : (
+            <div class="bh-coupon auto">
+              <span>✨ <strong>{airport.couponText}</strong>（点击右侧链接开通即自动享优惠）</span>
+            </div>
+          )}
+
+          <a href={airport.affUrl} target="_blank" rel="noopener noreferrer nofollow" class="btn btn-accent">
+            🚀 前往 {airport.name} 官网开通 →
+          </a>
+        </div>
+      </section>
+
+      <!-- 全档位套餐卡片矩阵 -->
+      <section class="plans-section">
+        <div class="section-head">
+          <h2>💰 {airport.name} 价格配套与流量套餐明细（共 {airport.plans.length} 档）</h2>
+          <p>覆盖日常月付、年付折算优惠以及不限时一次性买断备用方案，全部节点真实 1.0x 倍率：</p>
+        </div>
+
+        <div class="plans-cards-grid">
+          {airport.plans.map((plan) => (
+            <article class="plan-card glass-card">
+              <div class="pc-top">
+                <span class="pc-cycle">{plan.cycle || '周期订阅'}</span>
+                <h3 class="pc-name">{plan.name}</h3>
+              </div>
+
+              <div class="pc-price-box">
+                <div class="pc-orig">{plan.price}</div>
+                {plan.finalPrice && plan.finalPrice !== plan.price && (
+                  <div class="pc-final">🏷️ {plan.finalPrice}</div>
+                )}
+              </div>
+
+              <div class="pc-specs">
+                <div class="pcs-col">
+                  <span>流量</span>
+                  <strong>{plan.traffic}</strong>
+                </div>
+                <div class="pcs-col">
+                  <span>速率</span>
+                  <strong>{plan.speed}</strong>
+                </div>
+                <div class="pcs-col">
+                  <span>设备数</span>
+                  <strong>{plan.devices}</strong>
+                </div>
+              </div>
+
+              <ul class="pc-perks">
+                {plan.highlights.map((h) => (
+                  <li>✓ {h}</li>
+                ))}
+              </ul>
+
+              <a href={airport.affUrl} target="_blank" rel="noopener noreferrer nofollow" class="btn btn-primary pc-btn">
+                立即订阅此套餐 →
+              </a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <!-- 完整对比总表 -->
+      <section class="plans-table-section glass-card">
+        <h2>📋 {airport.name} 全 {airport.plans.length} 档套餐参数速查总表</h2>
+        <div class="table-responsive">
+          <table class="full-plans-table">
+            <thead>
+              <tr>
+                <th>套餐名称</th>
+                <th>适用周期</th>
+                <th>流量规格</th>
+                <th>官方标价</th>
+                <th>实付 / 折合价</th>
+                <th>设备与速率</th>
+                <th>核心亮点</th>
+              </tr>
+            </thead>
+            <tbody>
+              {airport.plans.map((plan) => (
+                <tr>
+                  <td><strong>{plan.name}</strong></td>
+                  <td>{plan.cycle || '—'}</td>
+                  <td class="t-blue">{plan.traffic}</td>
+                  <td><strong>{plan.price}</strong></td>
+                  <td class="t-green">{plan.finalPrice || plan.price}</td>
+                  <td>{plan.speed} · 设备: {plan.devices}</td>
+                  <td>{plan.highlights.join('；')}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 核心优势 + 解锁 + 客户端兼容性 -->
+      <section class="brand-details-grid">
+        <div class="detail-box glass-card">
+          <h2>🔍 为什么推荐 {airport.name}？（核心优势）</h2>
+          <ol class="adv-list">
+            {airport.features.map((adv) => (
+              <li>{adv}</li>
+            ))}
+          </ol>
+          <div class="rec-scene">
+            <strong>🎯 最佳适配人群：</strong>{airport.recommendedFor}
+          </div>
+        </div>
+
+        <div class="detail-box glass-card">
+          <h2>🎬 流媒体与 AI 解锁 & 客户端支持</h2>
+          <p class="unlock-note">经主流客户端真实节点验证，{airport.name} 在以下流媒体与 AI 服务均可稳定解锁使用：</p>
+          <div class="unlock-pills-wrap">
+            {airport.streamingUnlock.map((u) => (
+              <span class="badge badge-emerald">✅ {u}</span>
+            ))}
+          </div>
+          <div class="client-compat">
+            <h3>兼容主流代理协议与客户端：</h3>
+            <div class="compat-pills">
+              {airport.protocols.map((p) => (
+                <span class="badge badge-primary">{p}</span>
+              ))}
+              <span class="badge badge-purple">Clash Verge Rev</span>
+              <span class="badge badge-purple">Sing-box</span>
+              <span class="badge badge-purple">Shadowrocket</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 相关推荐 -->
+      <section class="more-brands">
+        <h3>查看更多 2027 精选热门机场对比：</h3>
+        <div class="more-brands-grid">
+          {neighbors.map((nb) => (
+            <a href={`/airports/${nb.id}`} class="nb-card glass-card">
+              <div class="nb-head">
+                <span class="nb-rank">NO.{nb.rank}</span>
+                <strong>{nb.name}</strong>
+              </div>
+              <div class="nb-price">{nb.startPriceShort} · {nb.startTrafficShort}</div>
+              <div class="nb-line">{nb.lineType}</div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <PageCtaBanner
+        title={`准备试用 ${airport.name}？记得使用月付先行测速`}
+        description="点击下方直达官方注册通道，即可享受专属优惠并一键导入 Clash Verge Rev / 小火箭订阅。"
+        ctaLabel={`🚀 前往 ${airport.name} 官网开通 →`}
+        ctaHref={airport.affUrl}
+        secondaryLabel="🏆 返回 35 家完整排行榜"
+        secondaryHref="/ranking"
+        maxWidth="1060px"
+      />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .brand-page {
+    padding-top: 2rem;
+  }
+
+  .brand-container {
+    max-width: 1060px;
+  }
+
+  .breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--accent-blue);
+  }
+
+  .breadcrumbs .current {
+    color: #0f172a;
+    font-weight: 700;
+  }
+
+  .brand-hero {
+    padding: 1.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+    margin-bottom: 2.5rem;
+    background: #ffffff;
+  }
+
+  .bh-top {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .bh-top {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+  }
+
+  .bh-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .bh-left h1 {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1.3;
+    margin-bottom: 0.65rem;
+  }
+
+  .bh-summary {
+    font-size: 0.94rem;
+    color: #475569;
+    line-height: 1.65;
+    max-width: 680px;
+  }
+
+  .bh-price-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 0.9rem;
+    padding: 1.1rem 1.35rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex-shrink: 0;
+    min-width: 210px;
+  }
+
+  .bp-label {
+    font-size: 0.75rem;
+    color: #1d4ed8;
+    font-weight: 700;
+  }
+
+  .bp-price {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #1e40af;
+    line-height: 1.2;
+    margin: 0.2rem 0;
+  }
+
+  .bp-traffic {
+    font-size: 0.82rem;
+    color: #0369a1;
+    font-weight: 700;
+  }
+
+  .bp-all {
+    font-size: 0.72rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+  }
+
+  .bh-specs-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  @media (min-width: 768px) {
+    .bh-specs-row {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .bhs-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.65rem;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .bhs-k {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+
+  .bhs-v {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .bhs-v.gold { color: #d97706; }
+  .bhs-v.blue { color: #0284c7; }
+  .bhs-v.green { color: #059669; }
+
+  .bh-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .bh-coupon {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    background: #fffbeb;
+    border: 1px dashed #f59e0b;
+    padding: 0.5rem 0.9rem;
+    border-radius: 0.55rem;
+    color: #92400e;
+  }
+
+  .bh-coupon.auto {
+    background: #ecfdf5;
+    border-color: #10b981;
+    color: #065f46;
+  }
+
+  .c-code {
+    font-family: monospace;
+    font-weight: 800;
+    font-size: 1rem;
+    color: #b45309;
+  }
+
+  .btn-xs {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+  }
+
+  .plans-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-head {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-head h2 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.35rem;
+  }
+
+  .section-head p {
+    font-size: 0.9rem;
+    color: #475569;
+  }
+
+  .plans-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .plans-cards-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .plans-cards-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .plan-card {
+    padding: 1.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    background: #ffffff;
+  }
+
+  .pc-top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .pc-cycle {
+    align-self: flex-start;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #2563eb;
+    background: #eff6ff;
+    padding: 0.15rem 0.55rem;
+    border-radius: 9999px;
+  }
+
+  .pc-name {
+    font-size: 1.12rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .pc-price-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.65rem;
+    padding: 0.75rem 0.9rem;
+  }
+
+  .pc-orig {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: #0284c7;
+  }
+
+  .pc-final {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #059669;
+    margin-top: 0.2rem;
+  }
+
+  .pc-specs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.45rem;
+    text-align: center;
+    background: #f8fafc;
+    padding: 0.55rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .pcs-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .pcs-col span {
+    color: #64748b;
+  }
+
+  .pcs-col strong {
+    color: #0f172a;
+    font-size: 0.78rem;
+  }
+
+  .pc-perks {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: #475569;
+    line-height: 1.45;
+    margin-bottom: 0.25rem;
+  }
+
+  .pc-btn {
+    margin-top: auto;
+    width: 100%;
+  }
+
+  .plans-table-section {
+    padding: 1.5rem;
+    background: #ffffff;
+    margin-bottom: 2.5rem;
+  }
+
+  .plans-table-section h2 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 1rem;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .full-plans-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.83rem;
+    text-align: left;
+  }
+
+  .full-plans-table th {
+    background: #f1f5f9;
+    padding: 0.75rem;
+    color: #334155;
+    border-bottom: 1px solid #cbd5e1;
+    white-space: nowrap;
+  }
+
+  .full-plans-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    vertical-align: top;
+  }
+
+  .t-blue { color: #0284c7; font-weight: 700; white-space: nowrap; }
+  .t-green { color: #059669; font-weight: 700; }
+
+  .brand-details-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .brand-details-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .detail-box {
+    padding: 1.5rem;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .detail-box h2 {
+    font-size: 1.18rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .adv-list {
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    font-size: 0.88rem;
+    color: #334155;
+    line-height: 1.55;
+  }
+
+  .rec-scene {
+    margin-top: auto;
+    padding: 0.75rem;
+    background: #f0f9ff;
+    border-radius: 0.5rem;
+    font-size: 0.82rem;
+    color: #0369a1;
+  }
+
+  .unlock-note {
+    font-size: 0.86rem;
+    color: #475569;
+  }
+
+  .unlock-pills-wrap,
+  .compat-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .client-compat {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid #f1f5f9;
+  }
+
+  .client-compat h3 {
+    font-size: 0.85rem;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+  }
+
+  .more-brands h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 1rem;
+  }
+
+  .more-brands-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  @media (min-width: 640px) {
+    .more-brands-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .more-brands-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .nb-card {
+    padding: 1rem;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .nb-head {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: #0f172a;
+  }
+
+  .nb-rank {
+    font-size: 0.72rem;
+    font-weight: 800;
+    background: #eff6ff;
+    color: #2563eb;
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.3rem;
+    font-family: monospace;
+  }
+
+  .nb-price {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0284c7;
+  }
+
+  .nb-line {
+    font-size: 0.74rem;
+    color: #64748b;
+  }
+</style>

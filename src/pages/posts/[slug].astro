@@ -1,0 +1,349 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_CONFIG } from '../../data/site';
+
+export async function getStaticPaths() {
+  const posts = Object.values(import.meta.glob('../../content/posts/*.md', { eager: true })) as any[];
+  return posts.map((post) => {
+    const slug = post.file.split(/[/\\]/).pop().replace(/\.md$/, '');
+    return {
+      params: { slug },
+      props: { post, slug },
+    };
+  });
+}
+
+const { post, slug } = Astro.props;
+const { frontmatter, Content } = post;
+
+const canonicalUrl = `${SITE_CONFIG.url}/posts/${slug}`;
+
+// Schema.org BlogPosting 结构化数据
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  'headline': frontmatter.title,
+  'description': frontmatter.description,
+  'datePublished': frontmatter.pubDate,
+  'dateModified': frontmatter.updatedDate || frontmatter.pubDate,
+  'author': {
+    '@type': 'Organization',
+    'name': frontmatter.author || '2027机场测评团队',
+    'url': SITE_CONFIG.url,
+  },
+  'publisher': {
+    '@type': 'Organization',
+    'name': SITE_CONFIG.name,
+    'logo': {
+      '@type': 'ImageObject',
+      'url': `${SITE_CONFIG.url}/favicon.svg`,
+    },
+  },
+  'mainEntityOfPage': {
+    '@type': 'WebPage',
+    '@id': canonicalUrl,
+  },
+  'keywords': frontmatter.keywords || '2027机场推荐, 科学上网, 翻墙机场',
+};
+
+// 面包屑导航 Schema
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': [
+    {
+      '@type': 'ListItem',
+      'position': 1,
+      'name': '首页',
+      'item': SITE_CONFIG.url,
+    },
+    {
+      '@type': 'ListItem',
+      'position': 2,
+      'name': '测评专栏',
+      'item': `${SITE_CONFIG.url}/posts`,
+    },
+    {
+      '@type': 'ListItem',
+      'position': 3,
+      'name': frontmatter.title,
+      'item': canonicalUrl,
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${frontmatter.title} | ${SITE_CONFIG.name}`}
+  description={frontmatter.description}
+  keywords={frontmatter.keywords}
+  canonicalUrl={canonicalUrl}
+  ogType="article"
+  publishedTime={frontmatter.pubDate}
+  modifiedTime={frontmatter.updatedDate || frontmatter.pubDate}
+  schemaJson={[articleSchema, breadcrumbSchema]}
+>
+  <article class="article-container container section-py">
+    <!-- 面包屑导航 -->
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">首页</a>
+      <span class="sep">/</span>
+      <a href="/posts">测评专栏</a>
+      <span class="sep">/</span>
+      <span class="current" aria-current="page">{frontmatter.title}</span>
+    </nav>
+
+    <!-- 文章头信息 -->
+    <header class="article-header">
+      <div class="header-tags">
+        <span class="badge badge-primary">{frontmatter.category || '深度评测'}</span>
+        {frontmatter.tags && frontmatter.tags.slice(0, 3).map((tag: string) => (
+          <span class="badge badge-purple">{tag}</span>
+        ))}
+      </div>
+      <h1 class="article-title">{frontmatter.title}</h1>
+      <div class="article-meta">
+        <span class="meta-item">✍️ {frontmatter.author || '2027测评团队'}</span>
+        <span class="meta-dot">·</span>
+        <time datetime={frontmatter.pubDate} class="meta-item">📅 发布：{frontmatter.pubDate}</time>
+        {frontmatter.updatedDate && (
+          <>
+            <span class="meta-dot">·</span>
+            <time datetime={frontmatter.updatedDate} class="meta-item">🔄 更新：{frontmatter.updatedDate}</time>
+          </>
+        )}
+      </div>
+    </header>
+
+    <!-- Markdown 正文内容渲染 -->
+    <div class="article-content glass-card markdown-body">
+      <Content />
+    </div>
+
+    <!-- 底部转化引导条 -->
+    <div class="post-cta-banner glass-card">
+      <div class="cta-text">
+        <h3>🚀 想看最新的 2027 高速稳定机场测速排行榜？</h3>
+        <p>独家汇总 2027 全网 IPLC 专线旗舰、平民性价比神器与最新限时优惠码。</p>
+      </div>
+      <a href="/#ranking" class="btn btn-accent btn-lg">
+        🔥 立即查看 2027 推荐榜单
+      </a>
+    </div>
+
+    <!-- 底部返回链接 -->
+    <div class="post-bottom-nav">
+      <a href="/posts" class="btn btn-outline">← 返回测评专栏列表</a>
+      <a href="/" class="btn btn-outline">返回首页 →</a>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-container {
+    max-width: 860px;
+    padding-top: 2rem;
+  }
+
+  .breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .breadcrumbs a {
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--accent-blue);
+  }
+
+  .breadcrumbs .sep {
+    color: var(--border-color);
+  }
+
+  .breadcrumbs .current {
+    color: var(--text-main);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .article-header {
+    margin-bottom: 2.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .header-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .article-title {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--text-main);
+    letter-spacing: -0.02em;
+  }
+
+  @media (min-width: 768px) {
+    .article-title {
+      font-size: 2.5rem;
+    }
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+
+  .article-content {
+    padding: 2.25rem;
+    border-radius: 1rem;
+    line-height: 1.8;
+    color: #334155;
+    font-size: 1.025rem;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+  }
+
+  @media (max-width: 640px) {
+    .article-content {
+      padding: 1.25rem;
+    }
+  }
+
+  /* Markdown 内部排版样式 */
+  .markdown-body :global(h1) {
+    display: none; /* 已经在文章标头展示 */
+  }
+
+  .markdown-body :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-top: 2.25rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .markdown-body :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #0284c7;
+    margin-top: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .markdown-body :global(p) {
+    margin-bottom: 1.25rem;
+  }
+
+  .markdown-body :global(ul),
+  .markdown-body :global(ol) {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+
+  .markdown-body :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .markdown-body :global(blockquote) {
+    border-left: 4px solid var(--accent-blue);
+    padding: 0.75rem 1.25rem;
+    background: #f0f9ff;
+    border-radius: 0 0.5rem 0.5rem 0;
+    margin-bottom: 1.25rem;
+    color: #334155;
+  }
+
+  .markdown-body :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+  }
+
+  .markdown-body :global(th),
+  .markdown-body :global(td) {
+    border: 1px solid var(--border-color);
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .markdown-body :global(th) {
+    background: #f8fafc;
+    color: var(--text-main);
+    font-weight: 600;
+  }
+
+  .markdown-body :global(code) {
+    background: #f1f5f9;
+    color: #0284c7;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-size: 0.875em;
+  }
+
+  .post-cta-banner {
+    margin-top: 2.5rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.25rem;
+    border: 1px solid rgba(234, 88, 12, 0.25);
+    background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  @media (min-width: 768px) {
+    .post-cta-banner {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+    }
+  }
+
+  .cta-text h3 {
+    font-size: 1.25rem;
+    color: #9a3412;
+    margin-bottom: 0.25rem;
+  }
+
+  .cta-text p {
+    color: #7c2d12;
+    font-size: 0.9rem;
+  }
+
+  .btn-lg {
+    padding: 0.85rem 1.75rem;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .post-bottom-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+  }
+</style>

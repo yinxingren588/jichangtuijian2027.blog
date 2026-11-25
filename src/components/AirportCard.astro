@@ -1,0 +1,687 @@
+---
+import type { AirportItem } from '../data/airports';
+
+export interface Props {
+  airport: AirportItem;
+}
+
+const { airport } = Astro.props;
+
+const isGold = airport.rank === 1;
+const isSilver = airport.rank === 2;
+const isBronze = airport.rank === 3;
+---
+
+<article class={`airport-card glass-card ${isGold ? 'card-gold' : isSilver ? 'card-silver' : isBronze ? 'card-bronze' : ''}`} id={airport.id}>
+  <div class="card-header">
+    <div class="header-left">
+      <div class={`rank-badge ${isGold ? 'rank-1' : isSilver ? 'rank-2' : isBronze ? 'rank-3' : 'rank-normal'}`}>
+        <span>NO.{airport.rank}</span>
+      </div>
+      <div class="title-meta">
+        <div class="title-row">
+          <h3 class="airport-title">
+            <a href={`/airports/${airport.id}`}>{airport.name}</a>
+          </h3>
+          <span class="badge badge-gold">{airport.badge}</span>
+        </div>
+        <div class="protocols-row">
+          {airport.protocols.map((p) => (
+            <span class="protocol-chip">{p}</span>
+          ))}
+          <span class="chip-status">● 在线率 {airport.uptime}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-rating">
+      <div class="rating-num">{airport.rating.toFixed(1)}</div>
+      <div class="rating-stars">
+        <span class="stars">★★★★★</span>
+        <span class="reviews-count">{airport.scoreText} · {airport.reviewsCount}+ 实测</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="airport-summary">{airport.summary}</p>
+
+  <!-- 核心硬件与线路规格网格 -->
+  <div class="specs-grid">
+    <div class="spec-item">
+      <span class="spec-label">专线架构</span>
+      <span class="spec-value highlight-blue">{airport.lineType}</span>
+    </div>
+    <div class="spec-item">
+      <span class="spec-label">测速性能</span>
+      <span class="spec-value highlight-green">{airport.speed}</span>
+    </div>
+    <div class="spec-item">
+      <span class="spec-label">骨干延迟</span>
+      <span class="spec-value highlight-amber">{airport.latency}</span>
+    </div>
+    <div class="spec-item">
+      <span class="spec-label">流媒体 / AI</span>
+      <span class="spec-value unlock-tags">
+        {airport.streamingUnlock.map((tag) => (
+          <span class="unlock-pill">{tag}</span>
+        ))}
+      </span>
+    </div>
+  </div>
+
+  <!-- 核心优势亮点 -->
+  <div class="advantages-wrap">
+    <div class="adv-heading">🔍 核心优势与实测表现</div>
+    <ul class="features-list">
+      {airport.features.map((feat) => (
+        <li>
+          <svg class="check-icon" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+          <span>{feat}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <!-- 可折叠全档位套餐价格与流量明细表 -->
+  {airport.plans && airport.plans.length > 0 && (
+    <details class="plans-dropdown">
+      <summary class="plans-summary">
+        <span class="ps-left">
+          <span class="ps-badge">共 {airport.plans.length} 档套餐</span>
+          <span class="ps-title">查看 {airport.name} 全部流量配额、价格与券后明细</span>
+        </span>
+        <span class="ps-toggle">展开价目表 ▾</span>
+      </summary>
+      <div class="plans-table-wrap">
+        <table class="mini-plans-table">
+          <thead>
+            <tr>
+              <th>套餐名称</th>
+              <th>流量规格</th>
+              <th>官方价 / 实付价</th>
+              <th>设备与速率</th>
+              <th>核心特色</th>
+            </tr>
+          </thead>
+          <tbody>
+            {airport.plans.map((plan) => (
+              <tr>
+                <td>
+                  <div class="mp-name">{plan.name}</div>
+                  {plan.cycle && <div class="mp-cycle">{plan.cycle}</div>}
+                </td>
+                <td class="mp-traffic">{plan.traffic}</td>
+                <td>
+                  <div class="mp-price">{plan.price}</div>
+                  {plan.finalPrice && plan.finalPrice !== plan.price && (
+                    <div class="mp-final">{plan.finalPrice}</div>
+                  )}
+                </td>
+                <td class="mp-meta">
+                  <span>{plan.speed}</span> · <span>设备: {plan.devices}</span>
+                </td>
+                <td class="mp-highlights">
+                  {plan.highlights.slice(0, 2).join('；')}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  )}
+
+  <!-- 适用人群小贴士 -->
+  <div class="recommended-box">
+    <span class="rec-label">🎯 最佳适配场景：</span>
+    <span class="rec-text">{airport.recommendedFor}</span>
+  </div>
+
+  <!-- 底部购买与优惠券区域 -->
+  <div class="card-footer">
+    <div class="pricing-wrap">
+      <div class="price-title">起步特惠 / 流量方案</div>
+      <div class="price-val">{airport.monthlyPrice}</div>
+      <div class="traffic-tag">{airport.traffic}</div>
+    </div>
+
+    {airport.couponCode ? (
+      <div class="coupon-box">
+        <div class="coupon-info">
+          <span class="coupon-tag">{airport.couponText}</span>
+          <code class="coupon-code">{airport.couponCode}</code>
+        </div>
+        <button class="btn btn-outline btn-copy" data-copy-code={airport.couponCode} title="点击一键复制优惠码">
+          📋 复制优惠码
+        </button>
+      </div>
+    ) : (
+      <div class="coupon-auto-box">
+        <span class="auto-tag">✨ 官方直连特惠</span>
+        <span class="auto-desc">{airport.couponText}</span>
+      </div>
+    )}
+
+    <div class="actions-group">
+      <a href={airport.affUrl} target="_blank" rel="noopener noreferrer nofollow" class="btn btn-accent btn-order" title={`立即前往 ${airport.name} 官网享受特惠`}>
+        🚀 直达官网注册
+      </a>
+      <a href={`/airports/${airport.id}`} class="btn btn-outline btn-review" title={`查看 ${airport.name} 全 ${airport.plans.length} 档套餐与测评`}>
+        🔍 全部 {airport.plans.length} 档套餐
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .airport-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    position: relative;
+    border-radius: 1rem;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  .card-gold {
+    border: 2px solid #f59e0b;
+    box-shadow: 0 6px 25px rgba(245, 158, 11, 0.15);
+  }
+
+  .card-silver {
+    border: 1px solid #94a3b8;
+  }
+
+  .card-bronze {
+    border: 1px solid #d97706;
+  }
+
+  .card-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .rank-badge {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.95rem;
+    font-family: monospace;
+    flex-shrink: 0;
+  }
+
+  .rank-1 {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(245, 158, 11, 0.3);
+  }
+
+  .rank-2 {
+    background: linear-gradient(135deg, #94a3b8, #64748b);
+    color: #fff;
+  }
+
+  .rank-3 {
+    background: linear-gradient(135deg, #b45309, #78350f);
+    color: #fff;
+  }
+
+  .rank-normal {
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  .title-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .airport-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+  }
+
+  .airport-title a:hover {
+    color: #0284c7;
+  }
+
+  .protocols-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .protocol-chip {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    color: #0284c7;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-weight: 600;
+  }
+
+  .chip-status {
+    font-size: 0.72rem;
+    color: #059669;
+    font-weight: 600;
+    margin-left: 0.25rem;
+  }
+
+  .header-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: #f8fafc;
+    padding: 0.45rem 0.8rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+  }
+
+  .rating-num {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #d97706;
+    font-family: monospace;
+  }
+
+  .rating-stars {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stars {
+    color: #f59e0b;
+    font-size: 0.85rem;
+    line-height: 1;
+  }
+
+  .reviews-count {
+    font-size: 0.7rem;
+    color: #64748b;
+  }
+
+  .airport-summary {
+    color: #475569;
+    font-size: 0.925rem;
+    line-height: 1.65;
+  }
+
+  .specs-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 0.65rem;
+    border: 1px solid #e2e8f0;
+  }
+
+  @media (min-width: 640px) {
+    .specs-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .spec-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    gap: 0.5rem;
+  }
+
+  .spec-label {
+    color: #64748b;
+    flex-shrink: 0;
+  }
+
+  .spec-value {
+    color: #0f172a;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .highlight-blue {
+    color: #0284c7;
+  }
+
+  .highlight-green {
+    color: #059669;
+  }
+
+  .highlight-amber {
+    color: #d97706;
+  }
+
+  .unlock-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    justify-content: flex-end;
+  }
+
+  .unlock-pill {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #059669;
+    font-size: 0.7rem;
+    padding: 0.05rem 0.35rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+  }
+
+  .advantages-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .adv-heading {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .features-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.865rem;
+    color: #334155;
+  }
+
+  .features-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    line-height: 1.5;
+  }
+
+  .check-icon {
+    width: 1.05rem;
+    height: 1.05rem;
+    color: #059669;
+    flex-shrink: 0;
+    margin-top: 0.16rem;
+  }
+
+  /* 可折叠套餐明细表 */
+  .plans-dropdown {
+    border: 1px solid #dbeafe;
+    background: #f8fafc;
+    border-radius: 0.65rem;
+    overflow: hidden;
+  }
+
+  .plans-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    cursor: pointer;
+    list-style: none;
+    background: #eff6ff;
+    color: #1e3a8a;
+    font-size: 0.84rem;
+    font-weight: 700;
+    user-select: none;
+  }
+
+  .plans-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .ps-left {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .ps-badge {
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 0.72rem;
+    padding: 0.12rem 0.5rem;
+    border-radius: 9999px;
+  }
+
+  .ps-toggle {
+    font-size: 0.78rem;
+    color: #2563eb;
+    flex-shrink: 0;
+  }
+
+  .plans-table-wrap {
+    overflow-x: auto;
+    border-top: 1px solid #dbeafe;
+    background: #ffffff;
+  }
+
+  .mini-plans-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+    text-align: left;
+  }
+
+  .mini-plans-table th {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+  }
+
+  .mini-plans-table td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    vertical-align: top;
+  }
+
+  .mp-name {
+    font-weight: 700;
+    color: #0f172a;
+    white-space: nowrap;
+  }
+
+  .mp-cycle {
+    font-size: 0.7rem;
+    color: #64748b;
+  }
+
+  .mp-traffic {
+    font-weight: 700;
+    color: #0284c7;
+    white-space: nowrap;
+  }
+
+  .mp-price {
+    font-weight: 700;
+    color: #0f172a;
+    white-space: nowrap;
+  }
+
+  .mp-final {
+    font-size: 0.7rem;
+    color: #059669;
+    font-weight: 600;
+  }
+
+  .mp-meta {
+    white-space: nowrap;
+    color: #64748b;
+  }
+
+  .mp-highlights {
+    min-width: 180px;
+    line-height: 1.45;
+  }
+
+  .recommended-box {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    background: #f0f9ff;
+    border-left: 3px solid #0284c7;
+    padding: 0.5rem 0.85rem;
+    border-radius: 0 0.375rem 0.375rem 0;
+    font-size: 0.825rem;
+  }
+
+  .rec-label {
+    color: #0284c7;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .rec-text {
+    color: #0369a1;
+    font-weight: 500;
+  }
+
+  .card-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  @media (min-width: 768px) {
+    .card-footer {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .pricing-wrap {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .price-title {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+
+  .price-val {
+    font-size: 1.18rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .traffic-tag {
+    font-size: 0.75rem;
+    color: #0284c7;
+    font-weight: 600;
+  }
+
+  .coupon-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #fffbeb;
+    border: 1px dashed #f59e0b;
+    padding: 0.45rem 0.85rem;
+    border-radius: 0.5rem;
+  }
+
+  .coupon-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .coupon-tag {
+    font-size: 0.7rem;
+    color: #b45309;
+    font-weight: 600;
+  }
+
+  .coupon-code {
+    font-family: monospace;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #92400e;
+  }
+
+  .coupon-auto-box {
+    display: flex;
+    flex-direction: column;
+    background: #ecfdf5;
+    border: 1px dashed #10b981;
+    padding: 0.45rem 0.85rem;
+    border-radius: 0.5rem;
+  }
+
+  .auto-tag {
+    font-size: 0.7rem;
+    color: #047857;
+    font-weight: 700;
+  }
+
+  .auto-desc {
+    font-size: 0.78rem;
+    color: #065f46;
+    font-weight: 600;
+  }
+
+  .btn-copy {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+  }
+
+  .actions-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .btn-order {
+    padding: 0.65rem 1.15rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .btn-review {
+    padding: 0.65rem 0.9rem;
+    white-space: nowrap;
+  }
+</style>

@@ -1,0 +1,597 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AirportCard from '../components/AirportCard.astro';
+import ComparisonTable from '../components/ComparisonTable.astro';
+import BuyingGuide from '../components/BuyingGuide.astro';
+import LineBenchmark from '../components/LineBenchmark.astro';
+import CarrierGuide from '../components/CarrierGuide.astro';
+import ClientGuides from '../components/ClientGuides.astro';
+import FaqSection from '../components/FaqSection.astro';
+import { AIRPORT_LIST } from '../data/airports';
+import { FAQS, faqToPlainText } from '../data/faqs';
+import { SITE_CONFIG } from '../data/site';
+
+// 获取最新文章
+const allPosts = Object.values(import.meta.glob('../content/posts/*.md', { eager: true })) as any[];
+const latestPosts = allPosts
+  .sort((a, b) => new Date(b.frontmatter.pubDate).getTime() - new Date(a.frontmatter.pubDate).getTime())
+  .slice(0, 3);
+
+// 构造 ItemList 结构化数据（供 Bing 识别评分与榜单卡片）
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  'name': '2027机场推荐综合排行榜',
+  'description': '2027年度高速稳定科学上网节点实测排行榜',
+  'itemListElement': AIRPORT_LIST.map((item, index) => ({
+    '@type': 'ListItem',
+    'position': index + 1,
+    'name': item.name,
+    'description': item.summary,
+    'url': `${SITE_CONFIG.url}/#${item.id}`,
+  })),
+};
+
+// 构造 FAQPage 结构化数据（极大提高 Bing FAQ 折叠摘要展现率）
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  'mainEntity': FAQS.map((faq) => ({
+    '@type': 'Question',
+    'name': faq.question,
+    'acceptedAnswer': {
+      '@type': 'Answer',
+      'text': faqToPlainText(faq.answer),
+    },
+  })),
+};
+---
+
+<BaseLayout
+  title={SITE_CONFIG.title}
+  description={SITE_CONFIG.description}
+  keywords={SITE_CONFIG.keywords}
+  schemaJson={[itemListSchema, faqSchema]}
+>
+  <!-- 英雄区 (Hero Section) - 强力突出 2027机场推荐 核心主旨 -->
+  <section class="hero-section">
+    <div class="container hero-container">
+      <div class="hero-badges">
+        <span class="badge badge-gold">✨ 2026-2027 年度全网实测首选</span>
+        <span class="badge badge-primary">⚡ IPLC 企业内网专线</span>
+        <span class="badge badge-emerald">🛡️ 晚高峰无视封锁 0 丢包</span>
+      </div>
+
+      <h1 class="hero-title">
+        2027机场推荐：最新高速稳定节点与科学上网测评榜单
+      </h1>
+
+      <p class="hero-desc">
+        聚焦 <strong>2027机场推荐</strong> 核心选购指标。深度实测全网数十家知名服务商，涵盖 IPLC / IEPL 纯内网专线、4K/8K 秒开流媒体、ChatGPT / Claude 纯净住宅 IP 原生解锁。买前必看的防跑路避坑指南与独家折扣优惠码。
+      </p>
+
+      <div class="hero-stats">
+        <div class="stat-card">
+          <span class="stat-num gradient-text">35家</span>
+          <span class="stat-label">全网实测收录品牌</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num gradient-text">99.98%</span>
+          <span class="stat-label">晚高峰连通保障率</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num gradient-text">&lt; 26ms</span>
+          <span class="stat-label">深港专线骨干实测</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num gradient-text">4K/8K</span>
+          <span class="stat-label">流媒体极速秒开</span>
+        </div>
+      </div>
+
+      <!-- 2026-2027 科学上网环境年度速报 -->
+      <div class="network-alert glass-card">
+        <div class="alert-icon">🔔</div>
+        <div class="alert-content">
+          <span class="alert-tag">2026-2027 科学上网环境年度速报</span>
+          <p class="alert-text">
+            防火长城（GFW）对老旧未混淆协议（SS/SSR/单层TLS）封锁常态化，晚高峰公网骨干网拥堵加剧。选购建议：<strong>重度办公、外贸跨境与AI科研优先选 IPLC/IEPL 纯内网物理专线</strong>（物理不过墙）；<strong>移动宽带弱网与外服游戏优先选 Hysteria 2 / VLESS-Reality</strong> 协议机场！
+          </p>
+        </div>
+      </div>
+
+      <!-- 30秒场景速配器 -->
+      <div class="quick-matcher glass-card">
+        <div class="matcher-header">
+          <span class="matcher-title">⚡ 30秒按需速配：点击直达最适合你的品牌</span>
+        </div>
+        <div class="matcher-chips">
+          <a href="#twilight" class="matcher-chip">🎬 4K/8K 追剧秒开 <span>→ 暮光加速</span></a>
+          <a href="#invisible" class="matcher-chip">💼 跨境电商/外贸住宅IP <span>→ 隐形人 / 微风网络</span></a>
+          <a href="#dalaocloud" class="matcher-chip">🤖 ChatGPT/Claude AI防封 <span>→ 大佬云 / 隐形人</span></a>
+          <a href="#flyv" class="matcher-chip">🎮 外服游戏电竞超低延迟 <span>→ 飞V / 闪跃</span></a>
+          <a href="/ranking#laddercloud" class="matcher-chip">💰 平民超高性价比学生党 <span>→ 梯子云 / U1S1</span></a>
+          <a href="/ranking#huanqiuti" class="matcher-chip">📦 备用长效不限时按量 <span>→ 环球梯 / 跨界云</span></a>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <a href="#ranking" class="btn btn-accent btn-hero">
+          🏆 查看 2027 推荐综合榜单
+        </a>
+        <a href="#comparison" class="btn btn-outline btn-hero">
+          📊 35家全景参数检索矩阵
+        </a>
+        <a href="#line-benchmark" class="btn btn-outline btn-hero">
+          🔬 四大线路深度横评
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2027 机场推荐综合排行榜 -->
+  <section class="section-py" id="ranking">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-subtitle">权威实测 · 每日监控</span>
+        <h2 class="section-title">2027最新机场推荐综合实力排行榜</h2>
+        <p class="section-desc">
+          所有推荐机场均经过至少 6 个月以上的晚高峰高负载压力测试与断线监控。拒绝虚假宣传，确保节点具备长期稳定的抗封锁能力。
+        </p>
+      </div>
+
+      <!-- 核心推荐卡片流 -->
+      <div class="airports-flow" id="airportsCardsContainer">
+        {AIRPORT_LIST.slice(0, 8).map((airport) => (
+          <AirportCard airport={airport} />
+        ))}
+        <div id="hiddenAirports" style="display: none; flex-direction: column; gap: 2rem;">
+          {AIRPORT_LIST.slice(8).map((airport) => (
+            <AirportCard airport={airport} />
+          ))}
+        </div>
+      </div>
+
+      <div class="toggle-cards-wrap" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.85rem; margin-top: 2.5rem;">
+        <button id="toggleCardsBtn" class="btn btn-outline btn-lg" style="cursor: pointer;">
+          👇 展开查看全部 35 家机场评测卡片（当前已展示前 8 名）
+        </button>
+        <a href="/ranking" class="btn btn-primary btn-lg">
+          🏆 进入独立完整排行榜页（支持分类筛选）→
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (() => {
+      const toggleCardsBtn = document.getElementById('toggleCardsBtn');
+      const hiddenCardsContainer = document.getElementById('hiddenAirports');
+      if (toggleCardsBtn && hiddenCardsContainer) {
+        toggleCardsBtn.addEventListener('click', () => {
+          const isHidden = hiddenCardsContainer.style.display === 'none';
+          if (isHidden) {
+            hiddenCardsContainer.style.display = 'flex';
+            toggleCardsBtn.innerHTML = '👆 收起后 27 家机场卡片（或前往下方参数矩阵速查）';
+          } else {
+            hiddenCardsContainer.style.display = 'none';
+            toggleCardsBtn.innerHTML = '👇 展开查看全部 35 家机场评测卡片（当前已展示前 8 名）';
+          }
+        });
+      }
+    })();
+  </script>
+
+  <!-- 核心参数与测速横向对比表 -->
+  <section class="section-py bg-darker" id="comparison">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-subtitle">一目了然 · 选购速查</span>
+        <h2 class="section-title">2027机场核心参数与晚高峰测速对比</h2>
+        <p class="section-desc">
+          横向对比各家在专线架构、最新协议支持（Shadowsocks / Trojan / Hysteria 2 / VLESS）、起步套餐资费与流媒体解锁能力。
+        </p>
+      </div>
+
+      <ComparisonTable />
+
+      <div class="more-posts-wrap" style="margin-top: 2rem;">
+        <a href="/comparison" class="btn btn-outline">📊 进入独立 35 家参数对比矩阵专页 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 场景化选购指南 -->
+  <section class="section-py" id="guide">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-subtitle">按需匹配 · 精准选购</span>
+        <h2 class="section-title">2027科学上网机场场景化选购指南</h2>
+        <p class="section-desc">
+          不同用途对线路延迟、带宽容量和 IP 纯净度的要求各异，挑选最适合你工作与娱乐场景的节点组合：
+        </p>
+      </div>
+
+      <BuyingGuide />
+
+      <div class="more-posts-wrap" style="margin-top: 2rem;">
+        <a href="/guide" class="btn btn-outline">🎯 查看防跑路六大铁律与完整选购指南 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 四大主流科学上网线路架构深度横评 -->
+  <section class="section-py bg-darker" id="line-benchmark">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-subtitle">硬核原理 · 认清本质</span>
+        <h2 class="section-title">2027主流四大科学上网线路架构深度横评</h2>
+        <p class="section-desc">
+          为什么价格相差数倍？拆解 IPLC 内网专线、IEPL 专线、BGP 隧道与普通公网直连的底层物理差异：
+        </p>
+      </div>
+
+      <LineBenchmark />
+
+      <div class="more-posts-wrap" style="margin-top: 2rem;">
+        <a href="/lines" class="btn btn-outline">🔬 查看五大加密协议与线路深评专题 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 三网运营商适配优化指南 -->
+  <section class="section-py" id="carrier-guide">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-subtitle">运营商差异 · 精准匹配</span>
+        <h2 class="section-title">三网运营商（中国电信/联通/移动）实测适配速查表</h2>
+        <p class="section-desc">
+          中国三大宽带运营商的国际出口策略差异巨大。选错线路即使买了高价机场依然卡顿，看准你的宽带类型：
+        </p>
+      </div>
+
+      <CarrierGuide />
+
+      <div class="more-posts-wrap" style="margin-top: 2rem;">
+        <a href="/carriers" class="btn btn-outline">📶 查看南北地域入口优选完整指南 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 客户端一键配置教程 -->
+  <section class="section-py bg-darker" id="tutorials">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-subtitle">小白上手 · 极速配置</span>
+        <h2 class="section-title">主流客户端（Clash / Sing-box / 小火箭）一键导入教程</h2>
+        <p class="section-desc">
+          Windows、macOS、iOS 苹果手机、Android 安卓主流客户端 4 步导入订阅指南，5 秒即可连接海外高速节点。
+        </p>
+      </div>
+
+      <ClientGuides />
+
+      <div class="more-posts-wrap" style="margin-top: 2rem;">
+        <a href="/clients" class="btn btn-outline">📱 查看完整客户端配置与防踩坑教程 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 最新深度评测专栏精选 -->
+  <section class="section-py" id="posts-preview">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-subtitle">技术剖析 · 避坑指南</span>
+        <h2 class="section-title">2027最新科学上网与机场测评技术专栏</h2>
+        <p class="section-desc">
+          掌握底层线路知识，认清 IPLC 专线与普通中继差异，远离不良商家低价跑路陷阱。
+        </p>
+      </div>
+
+      <div class="preview-posts-grid">
+        {latestPosts.map((post) => {
+          const slug = post.file.split(/[/\\]/).pop().replace(/\.md$/, '');
+          return (
+            <article class="preview-post-card glass-card">
+              <span class="badge badge-primary">{post.frontmatter.category || '评测专栏'}</span>
+              <h3 class="preview-post-title">
+                <a href={`/posts/${slug}`}>{post.frontmatter.title}</a>
+              </h3>
+              <p class="preview-post-desc">{post.frontmatter.description}</p>
+              <a href={`/posts/${slug}`} class="preview-post-link">阅读全文 →</a>
+            </article>
+          );
+        })}
+      </div>
+
+      <div class="more-posts-wrap">
+        <a href="/posts" class="btn btn-outline">
+          📚 查看全部评测文章与教程（共 {allPosts.length} 篇）→
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ 问答区域 -->
+  <section class="section-py bg-darker" id="faqs">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-subtitle">答疑解惑 · 必看常识（共 {FAQS.length} 条）</span>
+        <h2 class="section-title">2027机场推荐常见问题答疑百科（FAQ）</h2>
+        <p class="section-desc">
+          全面覆盖 7 大专题、共 {FAQS.length} 条实战答疑：涵盖 IPLC/IEPL 专线原理、三网宽带调优、按月防跑路、ChatGPT/TikTok 原生解锁与 Clash Verge Rev / 小火箭客户端排错，支持实时关键词搜索与分类筛选：
+        </p>
+      </div>
+
+      <FaqSection mode="home" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero-section {
+    padding: 4.5rem 0 3.5rem;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .hero-container {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.25;
+    color: #0f172a;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .hero-title {
+      font-size: 3.1rem;
+    }
+  }
+
+  .hero-desc {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 800px;
+    margin-bottom: 2.25rem;
+  }
+
+  .hero-desc strong {
+    color: #0f172a;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    width: 100%;
+    max-width: 760px;
+    margin-bottom: 2.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .hero-stats {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .stat-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 1.25rem 1rem;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .stat-num {
+    font-size: 1.6rem;
+    font-weight: 900;
+    font-family: monospace;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .btn-hero {
+    padding: 0.85rem 1.75rem;
+    font-size: 0.95rem;
+  }
+
+  .bg-darker {
+    background-color: #f8fafc;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .airports-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .preview-posts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 960px;
+    margin: 0 auto 2.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .preview-posts-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .preview-post-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  }
+
+  .preview-post-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #0f172a;
+  }
+
+  .preview-post-title a:hover {
+    color: var(--accent-blue);
+  }
+
+  .preview-post-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .preview-post-link {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+    margin-top: auto;
+  }
+
+  .more-posts-wrap {
+    text-align: center;
+  }
+
+  /* 2026-2027 网络环境速报 */
+  .network-alert {
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5rem auto 1.5rem;
+    padding: 1.15rem 1.35rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 0.75rem;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(234, 88, 12, 0.06);
+  }
+
+  .alert-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .alert-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .alert-tag {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #ea580c;
+    letter-spacing: 0.05em;
+  }
+
+  .alert-text {
+    font-size: 0.875rem;
+    color: #7c2d12;
+    line-height: 1.6;
+  }
+
+  /* 30秒场景速配器 */
+  .quick-matcher {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 2.25rem;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  }
+
+  .matcher-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+  }
+
+  .matcher-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .matcher-chip {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 0.45rem 0.85rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #1e293b;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .matcher-chip span {
+    color: var(--accent-blue);
+    font-weight: 700;
+  }
+
+  .matcher-chip:hover {
+    background: #f0f9ff;
+    border-color: #bae6fd;
+    color: #0284c7;
+    transform: translateY(-1px);
+  }
+</style>

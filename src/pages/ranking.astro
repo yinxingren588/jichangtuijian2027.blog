@@ -1,0 +1,208 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import PageCtaBanner from '../components/PageCtaBanner.astro';
+import AirportCard from '../components/AirportCard.astro';
+import { AIRPORT_LIST } from '../data/airports';
+import { SITE_CONFIG } from '../data/site';
+
+const canonicalUrl = `${SITE_CONFIG.url}/ranking`;
+const pageTitle = `2027机场推荐完整排行榜（${AIRPORT_LIST.length}家实测榜单与专属优惠码） | ${SITE_CONFIG.name}`;
+const pageDesc = `2027机场推荐完整榜单：全面收录 ${AIRPORT_LIST.length} 家实测高速稳定科学上网服务商，按全专线旗舰、高可用专线、平民性价比、电竞低延迟与不限时按量分类筛选，附独家折扣码直达。`;
+const pageKeywords =
+  '2027机场推荐排行榜, 2027稳定机场榜单, IPLC专线机场推荐, 隐形人机场, 暮光加速, 微风网络, 飞猫云, 大佬云, 机场优惠码';
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  'name': '2027机场推荐完整实力排行榜',
+  'description': pageDesc,
+  'itemListElement': AIRPORT_LIST.map((item, index) => ({
+    '@type': 'ListItem',
+    'position': index + 1,
+    'name': item.name,
+    'description': item.summary,
+    'url': `${SITE_CONFIG.url}/ranking#${item.id}`,
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': [
+    { '@type': 'ListItem', 'position': 1, 'name': '首页', 'item': SITE_CONFIG.url },
+    { '@type': 'ListItem', 'position': 2, 'name': '2027榜单', 'item': canonicalUrl },
+  ],
+};
+
+const categoryCounts = AIRPORT_LIST.reduce<Record<string, number>>((acc, item) => {
+  acc[item.category] = (acc[item.category] || 0) + 1;
+  return acc;
+}, {});
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDesc}
+  keywords={pageKeywords}
+  canonicalUrl={canonicalUrl}
+  schemaJson={[itemListSchema, breadcrumbSchema]}
+>
+  <div class="ranking-page section-py">
+    <div class="container">
+      <PageHero
+        currentLabel="2027机场排行榜"
+        badges={[
+          { text: `🏆 收录全部 ${AIRPORT_LIST.length} 家实测品牌`, variant: 'gold' },
+          { text: '⚡ 每日连通率自动化监控', variant: 'primary' },
+          { text: '🛡️ 支持按月付防跑路筛查', variant: 'emerald' },
+        ]}
+        title="2027机场推荐完整实力排行榜"
+        description="按晚高峰单线程速度、物理延迟抖动、IPLC/IEPL专线冗余、流媒体与 ChatGPT 解锁纯净度及长期售后口碑综合评分。支持按场景分类即时筛选："
+        actions={[
+          { label: '📊 切换表格参数速查对比', href: '/comparison', variant: 'outline' },
+          { label: '🎯 新手看选购指南避坑', href: '/guide', variant: 'outline' },
+        ]}
+        maxWidth="960px"
+      />
+
+      <!-- 榜单分类筛选栏 -->
+      <div class="ranking-toolbar glass-card" data-ranking-root>
+        <div class="ranking-filters" role="tablist" aria-label="机场分类筛选">
+          <button type="button" class="rank-pill is-active" data-rank-cat="all">
+            全部品牌 ({AIRPORT_LIST.length})
+          </button>
+          <button type="button" class="rank-pill" data-rank-cat="flagship">
+            👑 全专线旗舰 ({categoryCounts.flagship || 0})
+          </button>
+          <button type="button" class="rank-pill" data-rank-cat="iplc">
+            💼 高可用专线 ({categoryCounts.iplc || 0})
+          </button>
+          <button type="button" class="rank-pill" data-rank-cat="budget">
+            💰 平民性价比 ({categoryCounts.budget || 0})
+          </button>
+          <button type="button" class="rank-pill" data-rank-cat="game">
+            🎮 低延迟电竞 ({categoryCounts.game || 0})
+          </button>
+          <button type="button" class="rank-pill" data-rank-cat="metered">
+            📦 不限时按量 ({categoryCounts.metered || 0})
+          </button>
+        </div>
+        <div class="ranking-count" data-rank-status>
+          当前展示全部 {AIRPORT_LIST.length} 家实测品牌（#1 ~ #{AIRPORT_LIST.length}）
+        </div>
+      </div>
+
+      <!-- 全部 35 家卡片流 -->
+      <div class="airports-flow" id="rankingCardsGrid">
+        {AIRPORT_LIST.map((airport) => (
+          <div class="card-slot" data-rank-card data-category={airport.category}>
+            <AirportCard airport={airport} />
+          </div>
+        ))}
+      </div>
+
+      <PageCtaBanner
+        title="想用简洁表格一眼对比 35 家的起售价、延迟和解锁支持？"
+        description="前往全景参数对比矩阵页面，支持输入品牌名或协议关键词（如 Hysteria 2、VLESS-Reality）秒级过滤筛选。"
+        ctaLabel="📊 前往 35 家参数对比矩阵 →"
+        ctaHref="/comparison"
+        secondaryLabel="❓ 查看 60 条购买前必读 FAQ"
+        secondaryHref="/faq"
+        maxWidth="960px"
+      />
+    </div>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  (() => {
+    const pills = Array.from(document.querySelectorAll('[data-rank-cat]'));
+    const cards = Array.from(document.querySelectorAll('[data-rank-card]'));
+    const status = document.querySelector('[data-rank-status]');
+
+    pills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        const cat = pill.getAttribute('data-rank-cat') || 'all';
+        pills.forEach((p) => p.classList.toggle('is-active', p === pill));
+
+        let visible = 0;
+        cards.forEach((card) => {
+          const match = cat === 'all' || card.getAttribute('data-category') === cat;
+          card.classList.toggle('is-hidden', !match);
+          if (match) visible += 1;
+        });
+
+        if (status) {
+          status.textContent =
+            cat === 'all'
+              ? `当前展示全部 ${cards.length} 家实测品牌（#1 ~ #${cards.length}）`
+              : `当前分类共匹配 ${visible} 家精选推荐品牌`;
+        }
+      });
+    });
+  })();
+</script>
+
+<style>
+  .ranking-page {
+    padding-top: 2.25rem;
+  }
+
+  .ranking-toolbar {
+    max-width: 960px;
+    margin: 0 auto 2rem;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    background: #ffffff;
+  }
+
+  .ranking-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .rank-pill {
+    padding: 0.45rem 0.85rem;
+    border-radius: 9999px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .rank-pill:hover {
+    background: #f0f9ff;
+    border-color: #93c5fd;
+    color: #0284c7;
+  }
+
+  .rank-pill.is-active {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+  }
+
+  .ranking-count {
+    font-size: 0.82rem;
+    color: #64748b;
+  }
+
+  .airports-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .card-slot.is-hidden {
+    display: none;
+  }
+</style>

@@ -1,0 +1,103 @@
+<div class="scenarios-grid">
+  <div class="scenario-card glass-card">
+    <div class="scenario-icon">🎬</div>
+    <h3 class="scenario-title">4K / 8K 流媒体影音追剧</h3>
+    <p class="scenario-desc">
+      主要用于观看 YouTube 4K/8K、Netflix（网飞）、Disney+、HBO Max。推荐选择 <strong>大带宽 IPLC 专线或高性价比 BGP 隧道</strong>，看重晚高峰单线程带宽与流媒体原生解锁能力。
+    </p>
+    <div class="scenario-rec">
+      首选推荐：<strong><a href="/ranking#twilight">暮光加速</a> / <a href="/ranking#flycat">飞猫云</a> / <a href="/ranking#laddercloud">梯子云</a></strong>
+    </div>
+  </div>
+
+  <div class="scenario-card glass-card">
+    <div class="scenario-icon">💼</div>
+    <h3 class="scenario-title">外贸商务与跨境电商运营</h3>
+    <p class="scenario-desc">
+      用于管理 Amazon、Shopify、TikTok 跨境店铺、海外社交媒体矩阵与 WhatsApp 商务洽谈。严禁使用频繁变动且带有风控污点的公共 IP，必须使用 <strong>纯净原生住宅专线 IP</strong>。
+    </p>
+    <div class="scenario-rec">
+      首选推荐：<strong><a href="/ranking#breezenet">微风网络 Breezenet</a> / <a href="/ranking#wavenet">浪网 WaveNet</a></strong>
+    </div>
+  </div>
+
+  <div class="scenario-card glass-card">
+    <div class="scenario-icon">🤖</div>
+    <h3 class="scenario-title">ChatGPT / Claude AI 与科研</h3>
+    <p class="scenario-desc">
+      用于 OpenAI ChatGPT、Claude 3.5 Sonnet、Google Gemini、GitHub Copilot 与海外学术论文下载。要求节点 IP 未被 Cloudflare 或 OpenAI 拉黑，保持长连接不掉线。
+    </p>
+    <div class="scenario-rec">
+      首选推荐：<strong><a href="/ranking#invisible">隐形人</a> / <a href="/ranking#dalaocloud">大佬云</a></strong>
+    </div>
+  </div>
+
+  <div class="scenario-card glass-card">
+    <div class="scenario-icon">🎮</div>
+    <h3 class="scenario-title">海外网游联机电竞加速</h3>
+    <p class="scenario-desc">
+      用于 Steam、暴雪战网、APEX、CS2、Valorant 等外服联机。要求 UDP 转发丢包率极低、无抖动、物理延迟稳定在 30ms 以内。
+    </p>
+    <div class="scenario-rec">
+      首选推荐：<strong><a href="/ranking#flyv">飞V</a> / <a href="/ranking#flashleap">闪跃 FlashLeap</a> / <a href="/ranking#shandianshu">闪电鼠</a></strong>
+    </div>
+  </div>
+</div>
+
+<style>
+  .scenarios-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .scenarios-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .scenario-card {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    border-radius: 0.85rem;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  }
+
+  .scenario-icon {
+    font-size: 2.25rem;
+  }
+
+  .scenario-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .scenario-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .scenario-desc strong {
+    color: #0f172a;
+  }
+
+  .scenario-rec {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid #f1f5f9;
+    font-size: 0.85rem;
+    color: var(--accent-blue);
+    font-weight: 600;
+  }
+
+  .scenario-rec a:hover {
+    text-decoration: underline;
+  }
+</style>

@@ -1,0 +1,249 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FaqSection from '../components/FaqSection.astro';
+import { FAQS, FAQ_CATEGORIES, faqToPlainText } from '../data/faqs';
+import { SITE_CONFIG } from '../data/site';
+
+const canonicalUrl = `${SITE_CONFIG.url}/faq`;
+const pageTitle = `2027机场推荐常见问题大全（${FAQS.length}条FAQ百科） | ${SITE_CONFIG.name}`;
+const pageDesc = `汇总 ${FAQS.length} 条 2027 年科学上网机场选购 FAQ：覆盖 IPLC/IEPL 专线原理、电信/联通/移动宽带调优、ChatGPT/Claude/TikTok 解锁、Clash Verge Rev/Shadowrocket 客户端排错与防跑路原则。`;
+const pageKeywords =
+  '2027机场推荐FAQ, 机场常见问题, 科学上网FAQ, IPLC专线原理, Clash Verge Rev教程, Shadowrocket下载, ChatGPT节点报错, 机场跑路避坑';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  'mainEntity': FAQS.map((faq) => ({
+    '@type': 'Question',
+    'name': faq.question,
+    'acceptedAnswer': {
+      '@type': 'Answer',
+      'text': faqToPlainText(faq.answer),
+    },
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': [
+    {
+      '@type': 'ListItem',
+      'position': 1,
+      'name': '首页',
+      'item': SITE_CONFIG.url,
+    },
+    {
+      '@type': 'ListItem',
+      'position': 2,
+      'name': '常见问题百科 (FAQ)',
+      'item': canonicalUrl,
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDesc}
+  keywords={pageKeywords}
+  canonicalUrl={canonicalUrl}
+  schemaJson={[faqSchema, breadcrumbSchema]}
+>
+  <div class="faq-page section-py">
+    <div class="container">
+      <!-- 面包屑导航 -->
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">首页</a>
+        <span class="sep">/</span>
+        <span class="current" aria-current="page">常见问题百科（{FAQS.length} 条 FAQ）</span>
+      </nav>
+
+      <!-- 页面标头 -->
+      <header class="faq-hero">
+        <div class="hero-badges">
+          <span class="badge badge-primary">📚 收录 {FAQS.length} 条高频实战问答</span>
+          <span class="badge badge-emerald">⚡ 覆盖 {FAQ_CATEGORIES.length} 大专业分类</span>
+          <span class="badge badge-gold">🛡️ 2027 实测防坑指南</span>
+        </div>
+        <h1 class="section-title">2027机场推荐全百科常见问题答疑（FAQ）</h1>
+        <p class="section-desc">
+          从零基础新手挑选高性价比机场、识别跑路套路，到 IPLC/IEPL 专线原理、三网晚高峰排错、ChatGPT/Claude 原生住宅 IP 防封与 Clash Verge Rev / 小火箭客户端疑难解答，一页全搞定。
+        </p>
+
+        <div class="faq-hero-actions">
+          <a href="/#ranking" class="btn btn-primary">🏆 查看 2027 机场排行榜</a>
+          <a href="/#comparison" class="btn btn-outline">📊 35 家品牌参数筛选对比</a>
+          <a href="/posts" class="btn btn-outline">📝 阅读深度测评文章</a>
+        </div>
+      </header>
+
+      <!-- 分类总览卡 -->
+      <div class="category-overview-grid">
+        {FAQ_CATEGORIES.map((cat) => (
+          <div class="overview-card glass-card">
+            <div class="ov-icon">{cat.icon}</div>
+            <div class="ov-body">
+              <h2 class="ov-title">{cat.label}</h2>
+              <p class="ov-desc">{cat.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- 完整 60 条交互式 FAQ 列表 -->
+      <FaqSection mode="full" />
+
+      <!-- 底部转化横幅 -->
+      <div class="faq-cta-banner glass-card">
+        <div class="cta-text">
+          <h3>🔥 了解完避坑常识，准备挑选 2027 高速稳定机场？</h3>
+          <p>立即返回首页查看经过三网晚高峰实测的 35 家精品服务商榜单，一键领取专属注册折扣码。</p>
+        </div>
+        <a href="/#ranking" class="btn btn-accent">
+          查看 2027 推荐榜单 →
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .faq-page {
+    padding-top: 2.25rem;
+  }
+
+  .breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .breadcrumbs a {
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--accent-blue);
+  }
+
+  .breadcrumbs .sep {
+    color: var(--border-color);
+  }
+
+  .breadcrumbs .current {
+    color: var(--text-main);
+    font-weight: 600;
+  }
+
+  .faq-hero {
+    max-width: 960px;
+    margin: 0 auto 2.25rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .faq-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .category-overview-grid {
+    max-width: 960px;
+    margin: 0 auto 2rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  @media (min-width: 640px) {
+    .category-overview-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .category-overview-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .overview-card {
+    padding: 0.95rem 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    background: #ffffff;
+  }
+
+  .ov-icon {
+    font-size: 1.25rem;
+    line-height: 1.2;
+    flex-shrink: 0;
+  }
+
+  .ov-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.2rem;
+  }
+
+  .ov-desc {
+    font-size: 0.76rem;
+    color: #64748b;
+    line-height: 1.45;
+  }
+
+  .faq-cta-banner {
+    max-width: 960px;
+    margin: 2.5rem auto 0;
+    padding: 1.85rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.15rem;
+    border: 1px solid rgba(234, 88, 12, 0.25);
+    background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  }
+
+  @media (min-width: 768px) {
+    .faq-cta-banner {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+    }
+  }
+
+  .cta-text h3 {
+    font-size: 1.15rem;
+    color: #9a3412;
+    margin-bottom: 0.25rem;
+  }
+
+  .cta-text p {
+    font-size: 0.88rem;
+    color: #7c2d12;
+  }
+</style>

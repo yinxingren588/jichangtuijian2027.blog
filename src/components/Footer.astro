@@ -1,0 +1,211 @@
+---
+import { SITE_CONFIG } from '../data/site';
+import { FAQS } from '../data/faqs';
+---
+
+<footer class="site-footer">
+  <div class="container footer-content">
+    <div class="footer-grid">
+      <!-- 品牌与定位 -->
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="logo-title">2027机场推荐</span>
+          <span class="logo-domain">jichangtuijian2027.blog</span>
+        </div>
+        <p class="brand-desc">
+          聚焦2027年度最新高速、稳定、抗封锁科学上网机场测评。每日实时监测 IPLC 内网专线、流媒体4K解锁与ChatGPT低延迟连接，帮助外贸商务、科研人员与广大网友选购最靠谱的优质网络加速服务。
+        </p>
+        <div class="update-badge">
+          <span class="pulse-dot"></span>
+          <span>测评数据实时更新维护中 · 2026-2027</span>
+        </div>
+      </div>
+
+      <!-- 快速导航 -->
+      <div class="footer-col">
+        <h4 class="col-title">热门导航</h4>
+        <ul class="col-links">
+          <li><a href="/ranking">🏆 2027机场推荐榜</a></li>
+          <li><a href="/comparison">📊 35家全景参数矩阵</a></li>
+          <li><a href="/lines">🔬 四大线路深度横评</a></li>
+          <li><a href="/carriers">📶 三网运营商适配</a></li>
+          <li><a href="/guide">🎯 场景选购防坑指南</a></li>
+          <li><a href="/clients">📱 客户端配置向导</a></li>
+          <li><a href="/posts">📝 深度评测专栏</a></li>
+          <li><a href="/faq">❓ 常见问题百科（{FAQS.length} 条 FAQ）</a></li>
+        </ul>
+      </div>
+
+      <!-- 教程与专题 -->
+      <div class="footer-col">
+        <h4 class="col-title">新手教程与科普</h4>
+        <ul class="col-links">
+          <li><a href="/posts/2027-clash-singbox-tutorial">Clash Verge Rev 上手配置</a></li>
+          <li><a href="/posts/2027-iplc-vs-bgp-guide">IPLC 与普通中继区别科普</a></li>
+          <li><a href="/posts/2027-chatgpt-ai-proxy-guide">ChatGPT/Claude防封住宅IP</a></li>
+          <li><a href="/posts/2027-game-low-latency-guide">外服游戏电竞低延迟加速</a></li>
+          <li><a href="/posts/2027-anti-scam-guide">防跑路避坑 6 大核心原则</a></li>
+        </ul>
+      </div>
+
+      <!-- 站点信息与 SEO -->
+      <div class="footer-col">
+        <h4 class="col-title">SEO 与站点地图</h4>
+        <ul class="col-links">
+          <li><a href="/sitemap">🧭 网站地图 (HTML 全站索引)</a></li>
+          <li><a href="/sitemap.xml" target="_blank">📄 XML 站点地图 (sitemap.xml)</a></li>
+          <li><a href="/sitemap-index.xml" target="_blank">📑 站点索引 (sitemap-index.xml)</a></li>
+          <li><a href="/robots.txt" target="_blank">🤖 爬虫协议 (robots.txt)</a></li>
+          <li><a href="/e9a8f273b1454c5e89d14f2a781290bc.txt" target="_blank">⚡ Bing IndexNow 验证</a></li>
+          <li><a href="https://www.bing.com" rel="nofollow" target="_blank">🔎 Bing 搜索引擎</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 免责声明与版权 -->
+    <div class="footer-bottom">
+      <div class="disclaimer">
+        <strong>免责声明：</strong>
+        本站（jichangtuijian2027.blog）属于中立的技术评测与网络知识普及站点，所有测评数据均基于第三方公开网络节点真实性能测试。本站不运营、不提供任何代理服务或翻墙软件。测评内容仅用于计算机网络技术交流、学术科研查阅、外贸与跨境电商合规加速使用。请严格遵守本地法律法规，切勿用于从事任何违法违规活动。
+      </div>
+      <div class="copyright">
+        <p>© 2026-2027 <a href="https://jichangtuijian2027.blog">jichangtuijian2027.blog</a> 2027机场推荐 版权所有 · All Rights Reserved.</p>
+        <p class="seo-keywords">核心搜索词：2027机场推荐 | 2027稳定机场 | IPLC专线机场 | 科学上网选购指南</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: #f8fafc;
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
+    padding-top: 3.5rem;
+    padding-bottom: 2rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+    }
+  }
+
+  .footer-logo {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.75rem;
+  }
+
+  .logo-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .logo-domain {
+    font-size: 0.75rem;
+    color: var(--accent-blue);
+    font-family: monospace;
+    font-weight: 600;
+  }
+
+  .brand-desc {
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+    font-size: 0.85rem;
+    color: #475569;
+  }
+
+  .update-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    background: rgba(5, 150, 105, 0.1);
+    color: #059669;
+    border: 1px solid rgba(5, 150, 105, 0.25);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #059669;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #059669;
+  }
+
+  .col-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 1rem;
+  }
+
+  .col-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .col-links a {
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+
+  .col-links a:hover {
+    color: var(--accent-blue);
+  }
+
+  .footer-bottom {
+    padding-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .disclaimer {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: #64748b;
+  }
+
+  .copyright {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    color: #64748b;
+  }
+
+  .copyright a {
+    color: var(--accent-blue);
+    font-weight: 600;
+  }
+
+  .seo-keywords {
+    font-size: 0.75rem;
+    color: #94a3b8;
+  }
+</style>

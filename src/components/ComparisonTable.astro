@@ -1,0 +1,419 @@
+---
+import { AIRPORT_LIST } from '../data/airports';
+---
+
+<div class="comparison-wrapper">
+  <!-- 搜索与筛选工具栏 -->
+  <div class="table-toolbar glass-card">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        id="tableSearchInput"
+        placeholder="输入机场名称、协议（如 Hysteria2 / Shadowsocks）或线路搜索..."
+        aria-label="搜索机场"
+      />
+    </div>
+
+    <div class="category-filters" id="categoryFilters">
+      <button class="filter-btn active" data-category="all">全部 (35)</button>
+      <button class="filter-btn" data-category="flagship">全专线旗舰</button>
+      <button class="filter-btn" data-category="iplc">高可用专线</button>
+      <button class="filter-btn" data-category="budget">平民性价比</button>
+      <button class="filter-btn" data-category="game">电竞低延迟</button>
+      <button class="filter-btn" data-category="metered">不限时按量</button>
+    </div>
+  </div>
+
+  <div class="comparison-container glass-card">
+    <div class="table-responsive">
+      <table class="comparison-table" id="airportsComparisonTable">
+        <thead>
+          <tr>
+            <th class="th-rank">排名</th>
+            <th class="th-name">机场名称</th>
+            <th>专线类型</th>
+            <th>起步价格</th>
+            <th>基础流量套餐</th>
+            <th>高峰速率 & 在线率</th>
+            <th>核心优势</th>
+            <th>优惠码</th>
+            <th class="th-action">套餐与官网直达</th>
+          </tr>
+        </thead>
+        <tbody>
+          {AIRPORT_LIST.map((item) => (
+            <tr
+              class="airport-table-row"
+              data-category={item.category}
+              data-name={item.name.toLowerCase()}
+              data-protocols={item.protocols.join(' ').toLowerCase()}
+              data-linetype={`${item.lineType} ${item.features.join(' ')}`.toLowerCase()}
+            >
+              <td class="td-rank">
+                <span class={`badge-rank rank-${item.rank}`}>#{item.rank}</span>
+              </td>
+              <td class="td-name">
+                <a href={`/airports/${item.id}`} class="table-airport-title" title={`查看 ${item.name} 全 ${item.plans.length} 档套餐与评测`}>
+                  {item.name}
+                </a>
+                <span class="table-badge">{item.categoryLabel} · {item.plans.length}档套餐</span>
+              </td>
+              <td>
+                <span class="line-badge">{item.lineType}</span>
+              </td>
+              <td class="td-price">
+                <span class="price-text">{item.startPriceShort}</span>
+              </td>
+              <td>
+                <span class="traffic-col">{item.startTrafficShort}</span>
+              </td>
+              <td>
+                <div class="speed-info">
+                  <span class="speed-bold">{item.speed.split('（')[0]}</span>
+                  <span class="latency-dim">在线率 {item.uptime} · {item.latency}</span>
+                </div>
+              </td>
+              <td class="td-adv" title={item.features.join('；')}>
+                <span class="adv-snippet">{item.features[0]}</span>
+              </td>
+              <td>
+                {item.couponCode ? (
+                  <code class="protocol-tag">{item.couponCode}</code>
+                ) : (
+                  <span class="auto-disc">专属通道直惠</span>
+                )}
+              </td>
+              <td class="td-action">
+                <div class="row-actions">
+                  <a href={`/airports/${item.id}`} class="btn btn-outline btn-xs">套餐明细</a>
+                  <a href={item.affUrl} target="_blank" rel="noopener noreferrer nofollow" class="btn btn-accent btn-xs" title={`直达 ${item.name} 官网`}>
+                    直达官网 🚀
+                  </a>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="no-results" id="noResultsMsg" style="display: none;">
+      未找到符合条件的机场，请尝试更换搜索关键词或选择“全部”。
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('tableSearchInput');
+    const filterBtns = document.querySelectorAll('#categoryFilters .filter-btn');
+    const rows = document.querySelectorAll('.airport-table-row');
+    const noResults = document.getElementById('noResultsMsg');
+
+    let currentCategory = 'all';
+    let searchQuery = '';
+
+    function filterTable() {
+      let visibleCount = 0;
+      rows.forEach((row) => {
+        const cat = row.getAttribute('data-category');
+        const name = row.getAttribute('data-name') || '';
+        const protocols = row.getAttribute('data-protocols') || '';
+        const linetype = row.getAttribute('data-linetype') || '';
+
+        const matchesCat = currentCategory === 'all' || cat === currentCategory;
+        const matchesQuery =
+          !searchQuery ||
+          name.includes(searchQuery) ||
+          protocols.includes(searchQuery) ||
+          linetype.includes(searchQuery);
+
+        if (matchesCat && matchesQuery) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      if (noResults) {
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value.trim().toLowerCase();
+        filterTable();
+      });
+    }
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCategory = btn.getAttribute('data-category');
+        filterTable();
+      });
+    });
+  });
+</script>
+
+<style>
+  .comparison-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .table-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    padding: 0.5rem 0.85rem;
+    border-radius: 0.5rem;
+    flex-grow: 1;
+    max-width: 450px;
+  }
+
+  .search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #0f172a;
+    font-size: 0.875rem;
+    width: 100%;
+  }
+
+  .search-box input::placeholder {
+    color: #94a3b8;
+  }
+
+  .category-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .filter-btn {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.375rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+  }
+
+  .filter-btn.active {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+  }
+
+  .comparison-container {
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+  }
+
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .comparison-table thead th {
+    background: #f1f5f9;
+    color: #334155;
+    font-weight: 700;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .comparison-table tbody td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+  }
+
+  .comparison-table tbody tr:hover {
+    background: #f8fafc;
+  }
+
+  .badge-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.85rem;
+    height: 1.85rem;
+    border-radius: 0.375rem;
+    font-weight: 800;
+    font-size: 0.8rem;
+    font-family: monospace;
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  .badge-rank.rank-1 {
+    background: #f59e0b;
+    color: #fff;
+  }
+
+  .badge-rank.rank-2 {
+    background: #94a3b8;
+    color: #fff;
+  }
+
+  .badge-rank.rank-3 {
+    background: #d97706;
+    color: #fff;
+  }
+
+  .table-airport-title {
+    font-weight: 700;
+    color: #0f172a;
+    display: block;
+    transition: color 0.2s;
+  }
+
+  .table-airport-title:hover {
+    color: var(--accent-blue);
+  }
+
+  .table-badge {
+    font-size: 0.7rem;
+    color: var(--accent-blue);
+    font-weight: 600;
+  }
+
+  .line-badge {
+    color: #0284c7;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .protocol-tag {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    color: #475569;
+    font-family: monospace;
+  }
+
+  .speed-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .speed-bold {
+    font-weight: 600;
+    color: #059669;
+    font-size: 0.8rem;
+  }
+
+  .latency-dim {
+    font-size: 0.7rem;
+    color: #64748b;
+  }
+
+  .unlock-status {
+    color: #059669;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .price-text {
+    font-weight: 800;
+    color: #0284c7;
+  }
+
+  .traffic-col {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 0.82rem;
+  }
+
+  .td-adv {
+    max-width: 240px;
+    white-space: normal;
+    line-height: 1.4;
+  }
+
+  .adv-snippet {
+    font-size: 0.78rem;
+    color: #334155;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .auto-disc {
+    font-size: 0.75rem;
+    color: #059669;
+    font-weight: 600;
+  }
+
+  .row-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .rating-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #d97706;
+    font-weight: 800;
+  }
+
+  .btn-xs {
+    padding: 0.35rem 0.85rem;
+    font-size: 0.75rem;
+    border-radius: 0.375rem;
+    font-weight: 700;
+  }
+
+  .no-results {
+    padding: 2.5rem;
+    text-align: center;
+    color: #64748b;
+    font-size: 0.95rem;
+  }
+</style>

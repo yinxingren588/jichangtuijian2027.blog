@@ -1,0 +1,177 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import PageCtaBanner from '../components/PageCtaBanner.astro';
+import CarrierGuide from '../components/CarrierGuide.astro';
+import { SITE_CONFIG } from '../data/site';
+
+const canonicalUrl = `${SITE_CONFIG.url}/carriers`;
+const pageTitle = `中国电信/联通/移动三网宽带科学上网适配指南（2027实测） | ${SITE_CONFIG.name}`;
+const pageDesc =
+  '深度解析 2027 年中国电信 163 骨干网、中国联通 169 骨干网、中国移动 CMI 出境带宽策略及晚高峰 QoS 差异，教你根据宽带运营商精准选择最不卡顿的高速机场。';
+const pageKeywords =
+  '电信163机场推荐, 联通169机场, 移动宽带科学上网, 三网适配机场, 晚高峰不卡顿机场, 2027机场推荐';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': [
+    { '@type': 'ListItem', 'position': 1, 'name': '首页', 'item': SITE_CONFIG.url },
+    { '@type': 'ListItem', 'position': 2, 'name': '三网宽带适配', 'item': canonicalUrl },
+  ],
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDesc}
+  keywords={pageKeywords}
+  canonicalUrl={canonicalUrl}
+  schemaJson={breadcrumbSchema}
+>
+  <div class="carriers-page section-py">
+    <div class="container">
+      <PageHero
+        currentLabel="三网宽带适配"
+        badges={[
+          { text: '🌐 电信 163 / CN2 避坑', variant: 'primary' },
+          { text: '⚡ 联通 169 出口优选', variant: 'emerald' },
+          { text: '🚀 移动 CMI 抗 QoS 策略', variant: 'gold' },
+        ]}
+        title="三网运营商（电信 / 联通 / 移动）实测适配速查指南"
+        description="选错线路就算花了高价钱依然可能在晚高峰转圈！因为中国三大运营商的国际出境带宽与 QOS 限速策略完全不同，请对照你的宽带与手机网络精准匹配："
+        actions={[
+          { label: '🏆 按匹配结果前往选机场', href: '/ranking', variant: 'primary' },
+          { label: '🔬 查看 IPLC 与 BGP 线路区别', href: '/lines', variant: 'outline' },
+        ]}
+        maxWidth="1080px"
+      />
+
+      <section class="carrier-main">
+        <CarrierGuide />
+      </section>
+
+      <!-- 地域与入口调优矩阵 -->
+      <section class="region-section">
+        <div class="sub-header">
+          <h2>地域接入节点选择黄金法则（按你所在城市位置）</h2>
+          <p>同一家机场提供深圳、广州、上海、北京等多地入口时，优先选物理距离你最近且同运营商的入口：</p>
+        </div>
+
+        <div class="region-grid">
+          <div class="reg-card glass-card">
+            <h3>🌴 华南地区（广东 / 广西 / 福建 / 海南）</h3>
+            <p>物理距离香港极近，首选 <strong>深港 / 广港 IPLC 或 IEPL 专线</strong>，广州/深圳连香港节点可跑出 <strong>12ms – 24ms</strong> 超低物理延迟，是看港台流媒体、刷日区应用及打亚服游戏的最佳起点。</p>
+            <span class="reg-tip">推荐：隐形人、暮光加速、微风网络、飞猫云</span>
+          </div>
+
+          <div class="reg-card glass-card">
+            <h3>🏙️ 华东地区（上海 / 江苏 / 浙江 / 安徽）</h3>
+            <p>坐拥上海出海海缆门户，优先测试标注 <strong>沪日 IPLC / 沪韩 / 沪美</strong> 专线节点，访问日本东京、新加坡及美西硅谷地区延迟极为平稳，适合 AI 大模型（ChatGPT / Claude）开发及跨境电商业务。</p>
+            <span class="reg-tip">推荐：大佬云、星岛梦、光速云、云界线</span>
+          </div>
+
+          <div class="reg-card glass-card">
+            <h3>❄️ 华北与东北（北京 / 天津 / 河北 / 东北三省）</h3>
+            <p>如果使用的是 <strong>中国联通宽带</strong>，北方去往日本、韩国与欧洲节点天然直顺；若是电信或移动宽带用户，建议挑选支持 <strong>多入口 BGP 负载或 Hysteria 2</strong> 的机场，避免绕远南方出口造成高延迟。</p>
+            <span class="reg-tip">推荐：飞V、极连云、梯子云、灵动云</span>
+          </div>
+
+          <div class="reg-card glass-card">
+            <h3>🏫 宿舍校园网 / 偏远省市 / 移动 5G 热点</h3>
+            <p>校园网与部分移动出口在晚高峰对常规 TCP 长连接实施强 QoS 断流。遇到此类网络请认准内置 <strong>Hysteria 2 协议</strong> 或 <strong>443 端口 Trojan/Reality</strong> 的强穿透机场，切忌使用传统直连。</p>
+            <span class="reg-tip">推荐：飞V、闪跃 FlashLeap、闪电鼠、边缘节点</span>
+          </div>
+        </div>
+      </section>
+
+      <PageCtaBanner
+        title="还有宽带卡顿、手机快电脑慢、晚高峰掉速的具体疑问？"
+        description="我们在 FAQ 百科库「三网宽带与调优」专栏整理了 9 条实战排查技巧，帮你定位瓶颈所在。"
+        ctaLabel="❓ 查看三网调优详细 FAQ →"
+        ctaHref="/faq"
+        secondaryLabel="📊 对比 35 家支持协议"
+        secondaryHref="/comparison"
+        maxWidth="1080px"
+      />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .carriers-page {
+    padding-top: 2.25rem;
+  }
+
+  .carrier-main {
+    max-width: 1080px;
+    margin: 0 auto 3rem;
+  }
+
+  .region-section {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .sub-header {
+    text-align: center;
+    margin-bottom: 1.75rem;
+  }
+
+  .sub-header h2 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.45rem;
+  }
+
+  .sub-header p {
+    font-size: 0.92rem;
+    color: #475569;
+  }
+
+  .region-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .region-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .reg-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    background: #ffffff;
+  }
+
+  .reg-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .reg-card p {
+    font-size: 0.88rem;
+    color: #475569;
+    line-height: 1.65;
+  }
+
+  .reg-card strong {
+    color: #0f172a;
+  }
+
+  .reg-tip {
+    margin-top: auto;
+    padding-top: 0.65rem;
+    border-top: 1px solid #f1f5f9;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0284c7;
+  }
+</style>

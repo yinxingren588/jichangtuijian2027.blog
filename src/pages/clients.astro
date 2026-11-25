@@ -1,0 +1,186 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import PageCtaBanner from '../components/PageCtaBanner.astro';
+import ClientGuides from '../components/ClientGuides.astro';
+import { SITE_CONFIG } from '../data/site';
+
+const canonicalUrl = `${SITE_CONFIG.url}/clients`;
+const pageTitle = `2027机场客户端配置教程（Clash Verge Rev / Shadowrocket / Sing-box） | ${SITE_CONFIG.name}`;
+const pageDesc =
+  '2027年最新 Windows、macOS、iOS（Shadowrocket小火箭）与 Android 客户端推荐及 4 步订阅导入教程，详解 Rule 分流、TUN 虚拟网卡与防锁机安全规范。';
+const pageKeywords =
+  'Clash Verge Rev教程, Shadowrocket小火箭下载, Sing-box教程, 机场订阅导入方法, TUN模式设置, 客户端推荐';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': [
+    { '@type': 'ListItem', 'position': 1, 'name': '首页', 'item': SITE_CONFIG.url },
+    { '@type': 'ListItem', 'position': 2, 'name': '客户端教程', 'item': canonicalUrl },
+  ],
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDesc}
+  keywords={pageKeywords}
+  canonicalUrl={canonicalUrl}
+  schemaJson={breadcrumbSchema}
+>
+  <div class="clients-page section-py">
+    <div class="container">
+      <PageHero
+        currentLabel="客户端配置教程"
+        badges={[
+          { text: '🪟 Windows / 🍎 macOS 全兼容', variant: 'primary' },
+          { text: '📱 iOS 小火箭 & Android 指南', variant: 'emerald' },
+          { text: '⚡ 5 秒一键订阅导入', variant: 'purple' },
+        ]}
+        title="2027 主流科学上网客户端软件挑选与上手教程"
+        description="选好机场之后，配合现代化的开源客户端内核（Mihomo / Sing-box）才能发挥 Hysteria 2 与 VLESS-Reality 的全部性能。按照你的设备系统 4 步完成配置："
+        actions={[
+          { label: '📖 阅读《Clash / Sing-box 详细图文教程》', href: '/posts/2027-clash-singbox-tutorial', variant: 'outline' },
+          { label: '❓ 遇到导入失败查看排错 FAQ', href: '/faq', variant: 'outline' },
+        ]}
+        maxWidth="1120px"
+      />
+
+      <section class="guides-main">
+        <ClientGuides />
+      </section>
+
+      <!-- 核心概念与安全提示 -->
+      <section class="tips-section">
+        <div class="sub-header">
+          <h2>新手必须弄懂的 4 个客户端关键设置与安全铁律</h2>
+          <p>解决“国内网站变慢”、“终端 Git 不走代理”、“小火箭外区账号防锁机”等 90% 常见使用难题：</p>
+        </div>
+
+        <div class="tips-grid">
+          <div class="tip-card glass-card">
+            <h3>🔀 日常务必使用「规则（Rule）」模式</h3>
+            <p>
+              切勿长期把客户端调成「全局（Global）」模式，否则访问微信、淘宝、国内网盘都会绕道海外节点并白白浪费流量。切为 <strong>Rule 模式</strong> 后，国内直连全速不扣量，海外网站自动走优选节点。
+            </p>
+          </div>
+
+          <div class="tip-card glass-card">
+            <h3>🔌 何时开启「TUN 虚拟网卡模式」？</h3>
+            <p>
+              「系统代理」只接管主流浏览器。若你需要用终端命令行（Git / Docker / npm）、Cursor 编程软件或玩外服游戏客户端，必须以管理员身份打开 <strong>TUN（虚拟网卡）模式</strong>，让底层全部 UDP/TCP 流量走代理。
+            </p>
+          </div>
+
+          <div class="tip-card glass-card">
+            <h3>🍎 iPhone 下载小火箭「防锁机安全红线」</h3>
+            <p>
+              切勿在 iPhone「设置 → iCloud」中登录来路不明的共享 Apple ID！必须仅在 <strong>App Store 商店内部</strong>切换外区账号下载正版 Shadowrocket（$2.99），下载完成立即退回自己原本的国区账号。
+            </p>
+          </div>
+
+          <div class="tip-card glass-card">
+            <h3>🕒 节点全红超时：优先检查系统时钟同步</h3>
+            <p>
+              SS-2022、Trojan、Reality 等现代协议对双方时间误差极其敏感（误差超过 60 秒即握手失败）。遇到全节点超时红字，先打开电脑或手机时间设置点击<strong>「立即同步北京时间」</strong>，往往立刻恢复！
+            </p>
+          </div>
+
+          <div class="tip-card glass-card">
+            <h3>🪟 Windows SmartScreen 与 macOS 已损坏报错修复</h3>
+            <p>
+              Windows 安装开源版 Clash Verge Rev / Mihomo Party 若弹出未知发布者拦截，点击<strong>「更多信息 → 仍要运行」</strong>即可；macOS（Apple M 芯片选 <code>aarch64.dmg</code>）如提示软件已损坏，在终端运行 <code>sudo xattr -r -d com.apple.quarantine /Applications/Clash\ Verge.app</code> 解除安全隔离即可正常打开。
+            </p>
+          </div>
+
+          <div class="tip-card glass-card">
+            <h3>🤖 安卓息屏断流：务必关闭手机电池省电限制</h3>
+            <p>
+              小米澎湃、华为鸿蒙、OPPO/vivo 等国产手机后台查杀极严。安装 Clash Meta for Android (CMFA) 后，请在系统「应用管理 → 省电策略」中设置为<strong>「无限制 / 允许后台高耗电运行」</strong>并锁定最近任务卡片，确保锁屏后长连接不断线。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <PageCtaBanner
+        title="客户端准备好了，还没选定主力机场订阅？"
+        description="榜单全部 35 家机场均自带官方 Panel 一键导入 Clash / 小火箭 / Sing-box 按钮，5 秒配置完毕。"
+        ctaLabel="🏆 挑选 2027 推荐机场 →"
+        ctaHref="/ranking"
+        secondaryLabel="❓ 浏览客户端相关 FAQ"
+        secondaryHref="/faq"
+        maxWidth="1120px"
+      />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .clients-page {
+    padding-top: 2.25rem;
+  }
+
+  .guides-main {
+    max-width: 1120px;
+    margin: 0 auto 3.25rem;
+  }
+
+  .tips-section {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .sub-header {
+    text-align: center;
+    margin-bottom: 1.75rem;
+  }
+
+  .sub-header h2 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.45rem;
+  }
+
+  .sub-header p {
+    font-size: 0.92rem;
+    color: #475569;
+  }
+
+  .tips-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .tips-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .tip-card {
+    padding: 1.5rem;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .tip-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .tip-card p {
+    font-size: 0.88rem;
+    color: #475569;
+    line-height: 1.65;
+  }
+
+  .tip-card strong {
+    color: #0f172a;
+  }
+</style>
